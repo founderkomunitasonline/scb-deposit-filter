@@ -1,0 +1,11 @@
+{
+  "name": "scb-deposit-filter",
+  "version": "1.0.0",
+  "description": "Filter deposit bonus harian",
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "dependencies": {
+    "xlsx": "^0.18.5"
+  }
+}
