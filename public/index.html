@@ -649,7 +649,7 @@
             </div>
             <div class="header-description">
                 <h2><i class="fas fa-info-circle"></i> Smart Filter Logic</h2>
-                <p>User yang BELUM mendapatkan bonus deposit harian (berdasarkan kata kunci di kolom To Bank) dan BELUM melakukan withdraw akan ditampilkan sebagai Eligible Users.</p>
+                <p>User yang BELUM mendapatkan bonus deposit harian (berdasarkan kata kunci di kolom To Bank) dan BELUM melakukan withdraw akan ditampilkan sebagai BELUM CLAIM BONUS DP.</p>
                 <div class="feature-badge">
                     <i class="fas fa-clock"></i> Smart Deduplication: Hanya mengambil record dengan waktu terbaru per user per tanggal
                 </div>
@@ -665,7 +665,7 @@
             <div class="stat-card"><div class="stat-icon"><i class="fas fa-money-bill-wave"></i></div><div class="stat-value" id="statWDRecords">0</div><div class="stat-label">Withdraw Records</div></div>
             <div class="stat-card"><div class="stat-icon"><i class="fas fa-gift"></i></div><div class="stat-value" id="statBonusCount">0</div><div class="stat-label">Sudah Bonus</div></div>
             <div class="stat-card"><div class="stat-icon"><i class="fas fa-arrow-up"></i></div><div class="stat-value" id="statWDCount">0</div><div class="stat-label">Sudah Withdraw</div></div>
-            <div class="stat-card"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-value" id="statResultCount">0</div><div class="stat-label">Eligible Users</div></div>
+            <div class="stat-card"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-value" id="statResultCount">0</div><div class="stat-label">BELUM CLAIM BONUS DP</div></div>
             <div class="stat-card"><div class="stat-icon"><i class="fas fa-layer-group"></i></div><div class="stat-value" id="statDedupCount">0</div><div class="stat-label">Duplicates Removed</div></div>
         </div>
 
@@ -772,7 +772,7 @@
         <div id="resultSection" class="results-section" style="display:none">
             <div class="results-header">
                 <div>
-                    <h3><i class="fas fa-users"></i> Eligible Users</h3>
+                    <h3><i class="fas fa-users"></i> BELUM CLAIM BONUS DP</h3>
                     <div class="dedup-badge" style="margin-top: 8px;"><i class="fas fa-clock"></i> Menampilkan record dengan waktu terbaru per user per tanggal</div>
                 </div>
                 <div class="results-count" id="resultBadge">0 Users</div>
@@ -794,7 +794,7 @@
                 <li><i class="fas fa-upload" style="color:#2563eb"></i> <strong>1. Upload Data</strong> - Upload file Manual Deposit, QRPay, dan Withdraw History</li>
                 <li><i class="fas fa-tag" style="color:#2563eb"></i> <strong>2. Set Keywords</strong> - Pilih kata kunci bonus yang muncul di kolom "To Bank"</li>
                 <li><i class="fas fa-sliders-h" style="color:#2563eb"></i> <strong>3. Apply Filters</strong> - Atur nominal dan tanggal (opsional)</li>
-                <li><i class="fas fa-chart-line" style="color:#2563eb"></i> <strong>4. View Results</strong> - Klik Filter Data untuk melihat Eligible Users</li>
+                <li><i class="fas fa-chart-line" style="color:#2563eb"></i> <strong>4. View Results</strong> - Klik Filter Data untuk melihat BELUM CLAIM BONUS DP</li>
                 <li><i class="fas fa-download" style="color:#2563eb"></i> <strong>5. Export</strong> - Download hasil ke Excel</li>
                 <li><i class="fas fa-clock" style="color:#2563eb"></i> <strong>Smart Dedup</strong> - Jika ada multiple record di tanggal sama, hanya yang terbaru ditampilkan</li>
             </div>
@@ -1101,12 +1101,12 @@
                     
                     filteredResult = filtered;
                     document.getElementById('statResultCount').textContent = filtered.length;
-                    document.getElementById('resultBadge').innerHTML = `${filtered.length} Eligible Users`;
+                    document.getElementById('resultBadge').innerHTML = `${filtered.length} BELUM CLAIM BONUS DP`;
                     
                     const tbody = document.getElementById('resultBody');
                     tbody.innerHTML = '';
                     if(filtered.length === 0) {
-                        tbody.innerHTML = ' tr><td colspan="7" class="empty-state">No eligible users found</td></tr>';
+                        tbody.innerHTML = ' tr><td colspan="7" class="empty-state">No BELUM CLAIM BONUS DP found</td></tr>';
                     } else {
                         filtered.forEach(row => {
                             let depositStr = `Rp ${parseNumber(row['Deposit']).toLocaleString('id-ID')}`;
@@ -1128,7 +1128,7 @@
                     
                     document.getElementById('resultSection').style.display = 'block';
                     document.getElementById('downloadBtn').disabled = false;
-                    showAlert(`✨ Found ${filtered.length} eligible users (deduplicated - latest records only)`, 'success');
+                    showAlert(`✨ Found ${filtered.length} BELUM CLAIM BONUS DP (deduplicated - latest records only)`, 'success');
                 } catch(err) {
                     showAlert(`Error: ${err.message}`, 'error');
                 } finally {
@@ -1148,7 +1148,7 @@
             if(!filteredResult || filteredResult.length===0) { showAlert('No data to download', 'error'); return; }
             const ws = XLSX.utils.json_to_sheet(filteredResult);
             const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, 'Eligible Users');
+            XLSX.utils.book_append_sheet(wb, ws, 'BELUM CLAIM BONUS DP');
             XLSX.writeFile(wb, `eligible_users_${new Date().toISOString().split('T')[0]}.xlsx`);
             showAlert(`✓ Downloaded ${filteredResult.length} records`, 'success');
         };
