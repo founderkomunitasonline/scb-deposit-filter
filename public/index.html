@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SCB Deposit Filter - Bonus Harian</title>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
     <style>
@@ -24,7 +24,6 @@
             padding: 20px;
         }
 
-        /* Header */
         .header {
             text-align: center;
             color: white;
@@ -42,7 +41,6 @@
             opacity: 0.95;
         }
 
-        /* Upload Cards */
         .upload-section {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -55,12 +53,11 @@
             border-radius: 20px;
             padding: 24px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
+            transition: transform 0.3s;
         }
 
         .upload-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
         }
 
         .upload-card h2 {
@@ -87,19 +84,9 @@
             background: #f5f3ff;
         }
 
-        .upload-area.drag-over {
-            border-color: #667eea;
-            background: #ede9fe;
-        }
-
         .upload-icon {
             font-size: 48px;
             margin-bottom: 12px;
-        }
-
-        .upload-area p {
-            color: #666;
-            margin-top: 8px;
         }
 
         .file-info {
@@ -128,7 +115,6 @@
             background: #ffcdd2;
         }
 
-        /* Statistics */
         .stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -156,10 +142,8 @@
         .stat-label {
             color: #666;
             margin-top: 8px;
-            font-size: 0.9rem;
         }
 
-        /* Buttons */
         .button-group {
             display: flex;
             gap: 15px;
@@ -206,7 +190,7 @@
             color: white;
         }
 
-        .btn-danger:hover:not(:disabled) {
+        .btn-danger:hover {
             background: #dc2626;
             transform: scale(1.05);
         }
@@ -217,7 +201,6 @@
             transform: none;
         }
 
-        /* Loading */
         .loading {
             position: fixed;
             top: 0;
@@ -245,7 +228,6 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Results Table */
         .result-section {
             background: white;
             border-radius: 20px;
@@ -284,7 +266,6 @@
             background: #faf5ff;
         }
 
-        /* Alert */
         .alert {
             padding: 16px;
             border-radius: 12px;
@@ -312,7 +293,6 @@
             border: 1px solid #bae6fd;
         }
 
-        /* Info Panel */
         .info-panel {
             margin-top: 30px;
             background: #fef9e3;
@@ -365,23 +345,16 @@
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
         <div class="header">
             <h1>📊 SCB Deposit Filter</h1>
             <p>Filter data deposit untuk menampilkan user yang belum mendapatkan bonus deposit harian</p>
         </div>
 
-        <!-- Alert Container -->
         <div id="alertContainer"></div>
 
-        <!-- Upload Section -->
         <div class="upload-section">
-            <!-- Manual Deposit Card -->
             <div class="upload-card">
-                <h2>
-                    <span>📁</span>
-                    Deposit History (Manual)
-                </h2>
+                <h2><span>📁</span> Deposit History (Manual)</h2>
                 <div id="manualUploadArea" class="upload-area">
                     <div class="upload-icon">📂</div>
                     <p>Klik atau drag & drop file di sini</p>
@@ -394,12 +367,8 @@
                 </div>
             </div>
 
-            <!-- QRPay Deposit Card -->
             <div class="upload-card">
-                <h2>
-                    <span>📱</span>
-                    Deposit History (QRPay)
-                </h2>
+                <h2><span>📱</span> Deposit History (QRPay)</h2>
                 <div id="qrpayUploadArea" class="upload-area">
                     <div class="upload-icon">📱</div>
                     <p>Klik atau drag & drop file di sini</p>
@@ -413,7 +382,6 @@
             </div>
         </div>
 
-        <!-- Statistics -->
         <div class="stats" id="stats" style="display: none;">
             <div class="stat-card">
                 <div class="stat-number" id="statManual">0</div>
@@ -429,7 +397,6 @@
             </div>
         </div>
 
-        <!-- Button Group -->
         <div class="button-group">
             <button id="filterBtn" class="btn btn-primary" disabled onclick="filterData()">
                 🔍 Filter Data
@@ -442,7 +409,6 @@
             </button>
         </div>
 
-        <!-- Results Table -->
         <div id="resultSection" class="result-section" style="display: none;">
             <h3 id="resultTitle"></h3>
             <div style="overflow-x: auto;">
@@ -455,13 +421,11 @@
                             <th>Reference</th>
                         </tr>
                     </thead>
-                    <tbody id="resultBody">
-                    </tbody>
+                    <tbody id="resultBody"></tbody>
                 </table>
             </div>
         </div>
 
-        <!-- Info Panel -->
         <div class="info-panel">
             <h4>📌 Informasi Filter</h4>
             <ul>
@@ -469,53 +433,32 @@
                 <li>✓ Perbandingan dilakukan berdasarkan User Name dan Tanggal yang sama</li>
                 <li>✓ Hanya menampilkan data QRPay yang belum mendapatkan bonus di tanggal yang sama</li>
                 <li>✓ Mendukung file Excel (.xlsx, .xls, .csv)</li>
-                <li>✓ Data diproses di server untuk performa optimal</li>
+                <li>✓ Semua proses filter dilakukan di browser (tanpa server)</li>
             </ul>
         </div>
 
         <footer>
-            <p>SCB Deposit Filter © 2024 - Dibuat untuk memfilter data deposit bonus harian</p>
+            <p>SCB Deposit Filter © 2024 - Filter data deposit bonus harian</p>
         </footer>
     </div>
 
-    <!-- Loading Overlay -->
     <div id="loading" style="display: none;" class="loading">
         <div class="spinner"></div>
     </div>
 
     <script>
-        // State Management
         let manualData = null;
         let qrpayData = null;
         let filteredResult = null;
-        let manualFileName = '';
-        let qrpayFileName = '';
 
-        // DOM Elements
-        const manualFileInput = document.getElementById('manualFile');
-        const qrpayFileInput = document.getElementById('qrpayFile');
-        const manualUploadArea = document.getElementById('manualUploadArea');
-        const qrpayUploadArea = document.getElementById('qrpayUploadArea');
-        const filterBtn = document.getElementById('filterBtn');
-        const downloadBtn = document.getElementById('downloadBtn');
-        const loadingDiv = document.getElementById('loading');
-        const alertContainer = document.getElementById('alertContainer');
-
-        // Show Alert
-        function showAlert(message, type = 'info') {
+        function showAlert(message, type) {
             const alertDiv = document.createElement('div');
             alertDiv.className = `alert alert-${type}`;
-            alertDiv.innerHTML = `
-                <span>${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}</span>
-                <span>${message}</span>
-            `;
-            alertContainer.appendChild(alertDiv);
-            setTimeout(() => {
-                alertDiv.remove();
-            }, 5000);
+            alertDiv.innerHTML = `<span>${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}</span><span>${message}</span>`;
+            document.getElementById('alertContainer').appendChild(alertDiv);
+            setTimeout(() => alertDiv.remove(), 5000);
         }
 
-        // Read Excel File
         function readExcelFile(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -536,172 +479,121 @@
             });
         }
 
-        // Handle File Upload
+        function extractDate(datetime) {
+            if (!datetime) return '';
+            const str = String(datetime);
+            const match = str.match(/\d{4}-\d{2}-\d{2}/);
+            if (match) return match[0];
+            const date = new Date(str);
+            if (!isNaN(date.getTime())) return date.toISOString().split('T')[0];
+            return str.split(' ')[0];
+        }
+
         async function handleFileUpload(file, type) {
             if (!file) return;
+            document.getElementById('loading').style.display = 'flex';
             
             try {
                 const data = await readExcelFile(file);
                 
                 if (type === 'manual') {
                     manualData = data;
-                    manualFileName = file.name;
                     document.getElementById('manualFileName').textContent = file.name;
                     document.getElementById('manualRowCount').textContent = data.length;
                     document.getElementById('manualFileInfo').style.display = 'flex';
                     document.getElementById('statManual').textContent = data.length;
-                    document.querySelector('#manualUploadArea .upload-icon').innerHTML = '✅';
-                    showAlert(`Berhasil upload ${data.length} data manual`, 'success');
+                    showAlert(`✅ Berhasil upload ${data.length} data manual`, 'success');
                 } else {
                     qrpayData = data;
-                    qrpayFileName = file.name;
                     document.getElementById('qrpayFileName').textContent = file.name;
                     document.getElementById('qrpayRowCount').textContent = data.length;
                     document.getElementById('qrpayFileInfo').style.display = 'flex';
                     document.getElementById('statQRPay').textContent = data.length;
-                    document.querySelector('#qrpayUploadArea .upload-icon').innerHTML = '✅';
-                    showAlert(`Berhasil upload ${data.length} data QRPay`, 'success');
+                    showAlert(`✅ Berhasil upload ${data.length} data QRPay`, 'success');
                 }
                 
                 document.getElementById('stats').style.display = 'grid';
                 
-                // Enable filter button if both files are uploaded
                 if (manualData && qrpayData) {
-                    filterBtn.disabled = false;
+                    document.getElementById('filterBtn').disabled = false;
                 }
                 
             } catch (error) {
-                console.error('Error reading file:', error);
-                showAlert(`Error membaca file: ${error.message}`, 'error');
+                showAlert(`❌ Error: ${error.message}`, 'error');
+            } finally {
+                document.getElementById('loading').style.display = 'none';
             }
         }
 
-        // File Upload Event Listeners
-        manualFileInput.addEventListener('change', (e) => {
-            if (e.target.files[0]) handleFileUpload(e.target.files[0], 'manual');
-        });
-
-        qrpayFileInput.addEventListener('change', (e) => {
-            if (e.target.files[0]) handleFileUpload(e.target.files[0], 'qrpay');
-        });
-
-        // Drag & Drop
-        function setupDragDrop(area, input, type) {
-            area.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                area.classList.add('drag-over');
-            });
-            
-            area.addEventListener('dragleave', () => {
-                area.classList.remove('drag-over');
-            });
-            
-            area.addEventListener('drop', (e) => {
-                e.preventDefault();
-                area.classList.remove('drag-over');
-                const file = e.dataTransfer.files[0];
-                if (file) handleFileUpload(file, type);
-            });
-            
-            area.addEventListener('click', () => {
-                input.click();
-            });
-        }
-
-        setupDragDrop(manualUploadArea, manualFileInput, 'manual');
-        setupDragDrop(qrpayUploadArea, qrpayFileInput, 'qrpay');
-
-        // Remove File
-        window.removeFile = (type) => {
-            if (type === 'manual') {
-                manualData = null;
-                manualFileName = '';
-                document.getElementById('manualFileInfo').style.display = 'none';
-                document.getElementById('manualFile').value = '';
-                document.getElementById('statManual').textContent = '0';
-                document.querySelector('#manualUploadArea .upload-icon').innerHTML = '📂';
-            } else {
-                qrpayData = null;
-                qrpayFileName = '';
-                document.getElementById('qrpayFileInfo').style.display = 'none';
-                document.getElementById('qrpayFile').value = '';
-                document.getElementById('statQRPay').textContent = '0';
-                document.querySelector('#qrpayUploadArea .upload-icon').innerHTML = '📱';
-            }
-            
-            filteredResult = null;
-            document.getElementById('resultSection').style.display = 'none';
-            document.getElementById('statResult').textContent = '0';
-            filterBtn.disabled = !(manualData && qrpayData);
-            downloadBtn.disabled = true;
-        };
-
-        // Filter Data via API
-        window.filterData = async () => {
+        window.filterData = function() {
             if (!manualData || !qrpayData) {
                 showAlert('Harap upload kedua file terlebih dahulu', 'error');
                 return;
             }
             
-            loadingDiv.style.display = 'flex';
+            document.getElementById('loading').style.display = 'flex';
             
-            try {
-                const response = await fetch('/api/filter', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        manualData: manualData,
-                        qrpayData: qrpayData
-                    })
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    filteredResult = result.data;
-                    document.getElementById('statResult').textContent = result.count;
-                    document.getElementById('resultTitle').innerHTML = `📊 Hasil Filter: ${result.count} User Belum Dapat Bonus`;
+            setTimeout(() => {
+                try {
+                    const bonusSet = new Set();
                     
-                    // Render table
+                    manualData.forEach(record => {
+                        const toBank = String(record['To Bank'] || '');
+                        if (toBank.toUpperCase().includes('BONUS DEPOSIT HARIAN')) {
+                            const userName = String(record['User Name'] || '').trim().toLowerCase();
+                            const date = extractDate(record['Date/Time']);
+                            if (userName && date) {
+                                bonusSet.add(`${userName}|${date}`);
+                            }
+                        }
+                    });
+                    
+                    const filtered = qrpayData.filter(record => {
+                        const userName = String(record['User Name'] || '').trim().toLowerCase();
+                        const date = extractDate(record['Date/Time']);
+                        if (!userName || !date) return false;
+                        return !bonusSet.has(`${userName}|${date}`);
+                    }).map(record => ({
+                        'User Name': record['User Name'],
+                        'Deposit': record['Deposit'],
+                        'Date/Time': record['Date/Time'],
+                        'Reference': record['Reference'] || '-'
+                    }));
+                    
+                    filteredResult = filtered;
+                    document.getElementById('statResult').textContent = filtered.length;
+                    document.getElementById('resultTitle').innerHTML = `📊 Hasil Filter: ${filtered.length} User Belum Dapat Bonus`;
+                    
                     const tbody = document.getElementById('resultBody');
                     tbody.innerHTML = '';
                     
-                    result.data.forEach(row => {
+                    filtered.forEach(row => {
                         const tr = document.createElement('tr');
+                        let depositDisplay = row['Deposit'];
+                        if (typeof row['Deposit'] === 'number') {
+                            depositDisplay = `Rp ${row['Deposit'].toLocaleString('id-ID')}`;
+                        }
                         tr.innerHTML = `
-                            <td>${escapeHtml(row['User Name'])}</td>
-                            <td>${formatRupiah(row['Deposit'])}</td>
-                            <td>${escapeHtml(row['Date/Time'])}</td>
-                            <td>${escapeHtml(row['Reference'])}</td>
+                            <td>${escapeHtml(String(row['User Name']))}</td>
+                            <td>${escapeHtml(String(depositDisplay))}</td>
+                            <td>${escapeHtml(String(row['Date/Time']))}</td>
+                            <td>${escapeHtml(String(row['Reference']))}</td>
                         `;
                         tbody.appendChild(tr);
                     });
                     
                     document.getElementById('resultSection').style.display = 'block';
-                    downloadBtn.disabled = false;
-                    showAlert(result.message, 'success');
-                } else {
-                    showAlert(result.error || 'Terjadi kesalahan', 'error');
+                    document.getElementById('downloadBtn').disabled = false;
+                    showAlert(`✨ Ditemukan ${filtered.length} user belum dapat bonus`, 'success');
+                    
+                } catch (error) {
+                    showAlert(`❌ Error filtering: ${error.message}`, 'error');
+                } finally {
+                    document.getElementById('loading').style.display = 'none';
                 }
-            } catch (error) {
-                console.error('Error:', error);
-                showAlert('Gagal memfilter data: ' + error.message, 'error');
-            } finally {
-                loadingDiv.style.display = 'none';
-            }
+            }, 100);
         };
 
-        // Format Rupiah
-        function formatRupiah(value) {
-            if (typeof value === 'number') {
-                return `Rp ${value.toLocaleString('id-ID')}`;
-            }
-            return value;
-        }
-
-        // Escape HTML
         function escapeHtml(text) {
             if (!text) return '-';
             const div = document.createElement('div');
@@ -709,8 +601,7 @@
             return div.innerHTML;
         }
 
-        // Download Excel
-        window.downloadExcel = () => {
+        window.downloadExcel = function() {
             if (!filteredResult || filteredResult.length === 0) {
                 showAlert('Tidak ada data untuk didownload', 'error');
                 return;
@@ -719,20 +610,33 @@
             const ws = XLSX.utils.json_to_sheet(filteredResult);
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, 'Belum Dapat Bonus');
-            
-            const fileName = `deposit_belum_bonus_${new Date().toISOString().split('T')[0]}.xlsx`;
-            XLSX.writeFile(wb, fileName);
-            showAlert(`Berhasil download ${filteredResult.length} data`, 'success');
+            XLSX.writeFile(wb, `deposit_belum_bonus_${new Date().toISOString().split('T')[0]}.xlsx`);
+            showAlert(`✅ Download ${filteredResult.length} data berhasil`, 'success');
         };
 
-        // Reset All
-        window.resetAll = () => {
+        window.removeFile = function(type) {
+            if (type === 'manual') {
+                manualData = null;
+                document.getElementById('manualFileInfo').style.display = 'none';
+                document.getElementById('manualFile').value = '';
+                document.getElementById('statManual').textContent = '0';
+            } else {
+                qrpayData = null;
+                document.getElementById('qrpayFileInfo').style.display = 'none';
+                document.getElementById('qrpayFile').value = '';
+                document.getElementById('statQRPay').textContent = '0';
+            }
+            filteredResult = null;
+            document.getElementById('resultSection').style.display = 'none';
+            document.getElementById('statResult').textContent = '0';
+            document.getElementById('filterBtn').disabled = !(manualData && qrpayData);
+            document.getElementById('downloadBtn').disabled = true;
+        };
+
+        window.resetAll = function() {
             manualData = null;
             qrpayData = null;
             filteredResult = null;
-            manualFileName = '';
-            qrpayFileName = '';
-            
             document.getElementById('manualFileInfo').style.display = 'none';
             document.getElementById('qrpayFileInfo').style.display = 'none';
             document.getElementById('manualFile').value = '';
@@ -741,15 +645,44 @@
             document.getElementById('statQRPay').textContent = '0';
             document.getElementById('statResult').textContent = '0';
             document.getElementById('resultSection').style.display = 'none';
-            document.querySelector('#manualUploadArea .upload-icon').innerHTML = '📂';
-            document.querySelector('#qrpayUploadArea .upload-icon').innerHTML = '📱';
-            
-            filterBtn.disabled = true;
-            downloadBtn.disabled = true;
+            document.getElementById('filterBtn').disabled = true;
+            document.getElementById('downloadBtn').disabled = true;
             document.getElementById('stats').style.display = 'none';
-            
-            showAlert('Semua data telah direset', 'info');
+            showAlert('🔄 Semua data telah direset', 'info');
         };
+
+        document.getElementById('manualFile').addEventListener('change', (e) => {
+            if (e.target.files[0]) handleFileUpload(e.target.files[0], 'manual');
+        });
+        document.getElementById('qrpayFile').addEventListener('change', (e) => {
+            if (e.target.files[0]) handleFileUpload(e.target.files[0], 'qrpay');
+        });
+
+        function setupDragDrop(areaId, inputId, type) {
+            const area = document.getElementById(areaId);
+            const input = document.getElementById(inputId);
+            
+            area.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                area.style.borderColor = '#667eea';
+                area.style.background = '#f5f3ff';
+            });
+            area.addEventListener('dragleave', () => {
+                area.style.borderColor = '#ddd';
+                area.style.background = '#fafafa';
+            });
+            area.addEventListener('drop', (e) => {
+                e.preventDefault();
+                area.style.borderColor = '#ddd';
+                area.style.background = '#fafafa';
+                const file = e.dataTransfer.files[0];
+                if (file) handleFileUpload(file, type);
+            });
+            area.addEventListener('click', () => input.click());
+        }
+
+        setupDragDrop('manualUploadArea', 'manualFile', 'manual');
+        setupDragDrop('qrpayUploadArea', 'qrpayFile', 'qrpay');
     </script>
 </body>
 </html>
