@@ -21,7 +21,6 @@
             line-height: 1.5;
         }
 
-        /* Professional Container */
         .app-container {
             max-width: 1440px;
             margin: 0 auto;
@@ -77,6 +76,18 @@
             font-size: 0.875rem;
             color: #475569;
         }
+        .feature-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #eef2ff;
+            padding: 4px 10px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: #2563eb;
+            margin-top: 12px;
+        }
 
         /* Stats Grid */
         .stats-grid {
@@ -89,13 +100,12 @@
             background: white;
             border-radius: 20px;
             padding: 18px 16px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
             border: 1px solid #e2e8f0;
             transition: all 0.2s;
         }
         .stat-card:hover {
             border-color: #cbd5e1;
-            box-shadow: 0 4px 6px -2px rgba(0,0,0,0.05);
         }
         .stat-icon {
             font-size: 24px;
@@ -129,7 +139,6 @@
             border: 1px solid #e2e8f0;
             overflow: hidden;
             transition: all 0.2s;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
         }
         .upload-card:hover {
             border-color: #cbd5e1;
@@ -242,7 +251,6 @@
             border: 1px solid #e2e8f0;
             padding: 24px;
             margin-bottom: 32px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
         }
         .filter-title {
             display: flex;
@@ -466,6 +474,13 @@
             font-weight: 500;
             color: #2563eb;
         }
+        .dedup-badge {
+            background: #f1f5f9;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            color: #64748b;
+        }
         .table-wrapper {
             overflow-x: auto;
             padding: 0;
@@ -502,6 +517,15 @@
             font-size: 0.7rem;
             font-weight: 500;
             display: inline-block;
+        }
+        .latest-badge {
+            background: #eef2ff;
+            color: #2563eb;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            font-weight: 500;
+            margin-left: 8px;
         }
         .empty-state {
             text-align: center;
@@ -580,7 +604,7 @@
         }
         .info-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
             gap: 12px;
         }
         .info-grid li {
@@ -624,8 +648,11 @@
                 </div>
             </div>
             <div class="header-description">
-                <h2><i class="fas fa-info-circle"></i> Filter Logic</h2>
+                <h2><i class="fas fa-info-circle"></i> Smart Filter Logic</h2>
                 <p>User yang BELUM mendapatkan bonus deposit harian (berdasarkan kata kunci di kolom To Bank) dan BELUM melakukan withdraw akan ditampilkan sebagai Eligible Users.</p>
+                <div class="feature-badge">
+                    <i class="fas fa-clock"></i> Smart Deduplication: Hanya mengambil record dengan waktu terbaru per user per tanggal
+                </div>
             </div>
         </div>
 
@@ -639,6 +666,7 @@
             <div class="stat-card"><div class="stat-icon"><i class="fas fa-gift"></i></div><div class="stat-value" id="statBonusCount">0</div><div class="stat-label">Sudah Bonus</div></div>
             <div class="stat-card"><div class="stat-icon"><i class="fas fa-arrow-up"></i></div><div class="stat-value" id="statWDCount">0</div><div class="stat-label">Sudah Withdraw</div></div>
             <div class="stat-card"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-value" id="statResultCount">0</div><div class="stat-label">Eligible Users</div></div>
+            <div class="stat-card"><div class="stat-icon"><i class="fas fa-layer-group"></i></div><div class="stat-value" id="statDedupCount">0</div><div class="stat-label">Duplicates Removed</div></div>
         </div>
 
         <!-- Upload Grid -->
@@ -743,13 +771,16 @@
         <!-- Results -->
         <div id="resultSection" class="results-section" style="display:none">
             <div class="results-header">
-                <h3><i class="fas fa-users"></i> Eligible Users</h3>
+                <div>
+                    <h3><i class="fas fa-users"></i> Eligible Users</h3>
+                    <div class="dedup-badge" style="margin-top: 8px;"><i class="fas fa-clock"></i> Menampilkan record dengan waktu terbaru per user per tanggal</div>
+                </div>
                 <div class="results-count" id="resultBadge">0 Users</div>
             </div>
             <div class="table-wrapper">
                 <table id="resultTable">
                     <thead>
-                        <tr><th>User Name</th><th>Deposit</th><th>Date/Time</th><th>Reference</th><th>RRN</th><th>Status</th>\\
+                        <tr><th>User Name</th><th>Deposit</th><th>Date/Time</th><th>Reference</th><th>RRN</th><th>Status</th><th>Info</th>\\
                     </thead>
                     <tbody id="resultBody"></tbody>
                 寸
@@ -765,11 +796,12 @@
                 <li><i class="fas fa-sliders-h" style="color:#2563eb"></i> <strong>3. Apply Filters</strong> - Atur nominal dan tanggal (opsional)</li>
                 <li><i class="fas fa-chart-line" style="color:#2563eb"></i> <strong>4. View Results</strong> - Klik Filter Data untuk melihat Eligible Users</li>
                 <li><i class="fas fa-download" style="color:#2563eb"></i> <strong>5. Export</strong> - Download hasil ke Excel</li>
+                <li><i class="fas fa-clock" style="color:#2563eb"></i> <strong>Smart Dedup</strong> - Jika ada multiple record di tanggal sama, hanya yang terbaru ditampilkan</li>
             </div>
         </div>
 
         <footer>
-            <p>SCB Deposit Intelligence © 2024 | Professional Filter System for Bonus & Withdraw Management</p>
+            <p>SCB Deposit Intelligence © 2024 | Smart Deduplication - Latest Timestamp Only | Professional Filter System</p>
         </footer>
     </div>
 
@@ -814,6 +846,7 @@
             return 0;
         }
 
+        // Enhanced date parser that preserves full timestamp for comparison
         function extractDate(dt) {
             if(!dt) return '';
             let str = String(dt);
@@ -824,6 +857,58 @@
             let date = new Date(str);
             if(!isNaN(date.getTime())) return date.toISOString().split('T')[0];
             return '';
+        }
+
+        // Get full timestamp for sorting (to find latest)
+        function getFullTimestamp(dt) {
+            if(!dt) return 0;
+            let str = String(dt);
+            let date = new Date(str);
+            if(!isNaN(date.getTime())) return date.getTime();
+            
+            // Try parsing common formats
+            let matchDMY = str.match(/(\d{2})\/(\d{2})\/(\d{4})[\s](\d{2}):(\d{2})/);
+            if(matchDMY) {
+                let dateStr = `${matchDMY[3]}-${matchDMY[2]}-${matchDMY[1]}T${matchDMY[4]}:${matchDMY[5]}:00`;
+                return new Date(dateStr).getTime();
+            }
+            
+            let matchYMD = str.match(/(\d{4})-(\d{2})-(\d{2})[\s](\d{2}):(\d{2})/);
+            if(matchYMD) {
+                return new Date(str).getTime();
+            }
+            return 0;
+        }
+
+        // Deduplicate data: keep only the latest record per user per date
+        function deduplicateByLatestTimestamp(data) {
+            const latestMap = new Map();
+            let duplicateCount = 0;
+            
+            data.forEach(record => {
+                const userName = String(record['User Name'] || '').trim().toLowerCase();
+                const date = extractDate(record['Date/Time']);
+                const timestamp = getFullTimestamp(record['Date/Time']);
+                
+                if(!userName || !date) return;
+                
+                const key = `${userName}|${date}`;
+                
+                if(!latestMap.has(key)) {
+                    latestMap.set(key, { record, timestamp });
+                } else {
+                    const existing = latestMap.get(key);
+                    if(timestamp > existing.timestamp) {
+                        duplicateCount++;
+                        latestMap.set(key, { record, timestamp });
+                    } else {
+                        duplicateCount++;
+                    }
+                }
+            });
+            
+            const dedupedData = Array.from(latestMap.values()).map(item => item.record);
+            return { dedupedData, duplicateCount };
         }
 
         function readExcelFile(file) {
@@ -860,6 +945,15 @@
                 }
             }
             
+            // Apply deduplication for QRPay data (keeping latest timestamp)
+            if(type === 'qrpay' && allRecords.length > 0) {
+                const { dedupedData, duplicateCount } = deduplicateByLatestTimestamp(allRecords);
+                if(duplicateCount > 0) {
+                    showAlert(`QRPay: ${duplicateCount} duplicates removed, keeping latest records only`, 'info');
+                }
+                allRecords = dedupedData;
+            }
+            
             if(type === 'manual') {
                 manualFilesData = fileList;
                 combinedManualData = allRecords;
@@ -871,7 +965,7 @@
                 qrpayFilesData = fileList;
                 combinedQRData = allRecords;
                 updateFileList('qrpay', fileList);
-                document.getElementById('qrpayTotalBadge').innerHTML = `<i class="fas fa-chart-line"></i> ${fileList.length} file · ${allRecords.length} records`;
+                document.getElementById('qrpayTotalBadge').innerHTML = `<i class="fas fa-chart-line"></i> ${fileList.length} file · ${allRecords.length} records (deduplicated)`;
                 document.getElementById('qrpayTotalBadge').style.display = 'block';
                 document.getElementById('statQRRecords').textContent = allRecords.length;
             } else if(type === 'withdraw') {
@@ -884,7 +978,7 @@
             }
             
             if(allRecords.length > 0) {
-                showAlert(`✓ ${type.toUpperCase()}: ${allRecords.length} records`, 'success');
+                showAlert(`✓ ${type.toUpperCase()}: ${allRecords.length} records ${type === 'qrpay' ? '(deduplicated - latest only)' : ''}`, 'success');
             }
             
             if(combinedManualData.length > 0 && combinedQRData.length > 0 && combinedWithdrawData.length > 0) {
@@ -964,6 +1058,7 @@
                     const startDate = document.getElementById('startDate').value;
                     const endDate = document.getElementById('endDate').value;
                     
+                    // Bonus Set from manual data
                     const bonusSet = new Set();
                     combinedManualData.forEach(rec => {
                         if(isBonusTransaction(rec)) {
@@ -974,6 +1069,7 @@
                     });
                     document.getElementById('statBonusCount').textContent = bonusSet.size;
                     
+                    // Withdraw Set
                     const withdrawSet = new Set();
                     combinedWithdrawData.forEach(wd => {
                         const user = String(wd['User Name'] || '').trim().toLowerCase();
@@ -982,6 +1078,7 @@
                     });
                     document.getElementById('statWDCount').textContent = withdrawSet.size;
                     
+                    // Filter QRPay records (already deduplicated)
                     const filtered = combinedQRData.filter(rec => {
                         const user = String(rec['User Name'] || '').trim().toLowerCase();
                         const date = extractDate(rec['Date/Time']);
@@ -1009,10 +1106,12 @@
                     const tbody = document.getElementById('resultBody');
                     tbody.innerHTML = '';
                     if(filtered.length === 0) {
-                        tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No eligible users found</td></tr>';
+                        tbody.innerHTML = ' tr><td colspan="7" class="empty-state">No eligible users found</td></tr>';
                     } else {
                         filtered.forEach(row => {
                             let depositStr = `Rp ${parseNumber(row['Deposit']).toLocaleString('id-ID')}`;
+                            const timestamp = getFullTimestamp(row['Date/Time']);
+                            const isLatest = true; // Already deduplicated
                             const tr = document.createElement('tr');
                             tr.innerHTML = `
                                 <td><strong>${escapeHtml(row['User Name'])}</strong></td>
@@ -1021,6 +1120,7 @@
                                 <td><code>${escapeHtml(row['Reference'])}</code></td>
                                 <td><code>${escapeHtml(row['RRN'])}</code></td>
                                 <td><span class="status-badge">Eligible</span></td>
+                                <td><span class="latest-badge"><i class="fas fa-clock"></i> Latest</span></td>
                             `;
                             tbody.appendChild(tr);
                         });
@@ -1028,7 +1128,7 @@
                     
                     document.getElementById('resultSection').style.display = 'block';
                     document.getElementById('downloadBtn').disabled = false;
-                    showAlert(`✨ Found ${filtered.length} eligible users`, 'success');
+                    showAlert(`✨ Found ${filtered.length} eligible users (deduplicated - latest records only)`, 'success');
                 } catch(err) {
                     showAlert(`Error: ${err.message}`, 'error');
                 } finally {
