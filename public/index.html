@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>SCB Deposit Filter - Bonus Harian</title>
+    <title>SCB Deposit Filter Pro - Bonus Harian Filter System</title>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -13,123 +15,227 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
             min-height: 100vh;
+            color: #1e293b;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #3b82f6;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #2563eb;
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
             padding: 20px;
         }
 
+        /* Header */
         .header {
             text-align: center;
-            color: white;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
+            position: relative;
         }
 
         .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
         }
 
         .header p {
-            font-size: 1rem;
-            opacity: 0.95;
+            color: #94a3b8;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(59,130,246,0.2);
+            backdrop-filter: blur(10px);
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            color: #60a5fa;
+            margin-bottom: 16px;
         }
 
         /* Upload Cards */
         .upload-section {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
             gap: 24px;
-            margin-bottom: 30px;
+            margin-bottom: 32px;
         }
 
         .upload-card {
-            background: white;
-            border-radius: 20px;
-            padding: 24px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(10px);
+            border-radius: 28px;
+            padding: 28px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255,255,255,0.2);
         }
 
-        .upload-card h2 {
-            font-size: 1.3rem;
-            margin-bottom: 16px;
-            color: #333;
+        .upload-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        }
+
+        .card-header {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        .card-header h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .card-header p {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-top: 4px;
         }
 
         .upload-area {
-            border: 2px dashed #ddd;
-            border-radius: 16px;
-            padding: 30px 20px;
+            border: 2px dashed #cbd5e1;
+            border-radius: 20px;
+            padding: 40px 20px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s;
-            background: #fafafa;
+            background: #f8fafc;
         }
 
         .upload-area:hover {
-            border-color: #667eea;
-            background: #f5f3ff;
+            border-color: #3b82f6;
+            background: #eff6ff;
+            transform: scale(0.98);
+        }
+
+        .upload-area.drag-over {
+            border-color: #3b82f6;
+            background: #dbeafe;
+            transform: scale(0.98);
         }
 
         .upload-icon {
-            font-size: 40px;
-            margin-bottom: 8px;
+            font-size: 56px;
+            margin-bottom: 12px;
         }
 
         .file-info {
-            margin-top: 12px;
-            padding: 10px;
-            background: #e8f5e9;
-            border-radius: 10px;
-            color: #2e7d32;
-            font-size: 0.85rem;
+            margin-top: 16px;
+            padding: 14px;
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+            border-radius: 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border: 1px solid #bbf7d0;
+        }
+
+        .file-info span {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #166534;
         }
 
         .remove-file {
-            background: #ffebee;
-            color: #c62828;
+            background: #fee2e2;
+            color: #dc2626;
             border: none;
-            padding: 4px 12px;
-            border-radius: 20px;
+            padding: 6px 14px;
+            border-radius: 40px;
             cursor: pointer;
             font-size: 0.75rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .remove-file:hover {
+            background: #fecaca;
+            transform: scale(1.05);
         }
 
         /* Filter Panel */
         .filter-panel {
-            background: white;
-            border-radius: 20px;
-            padding: 24px;
-            margin-bottom: 30px;
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(10px);
+            border-radius: 28px;
+            padding: 28px;
+            margin-bottom: 32px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
         }
 
-        .filter-panel h3 {
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-            color: #333;
+        .filter-title {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #e2e8f0;
         }
 
-        .filter-row {
+        .filter-title i {
+            font-size: 28px;
+            color: #3b82f6;
+        }
+
+        .filter-title h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .filter-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
         }
 
         .filter-group {
@@ -140,180 +246,346 @@
 
         .filter-group label {
             font-weight: 600;
-            color: #555;
-            font-size: 0.9rem;
+            color: #475569;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .filter-group label i {
+            font-size: 14px;
+            color: #3b82f6;
         }
 
         .filter-group input, .filter-group select {
-            padding: 10px 12px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
+            padding: 12px 14px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 14px;
             font-size: 0.9rem;
+            font-family: inherit;
             transition: all 0.3s;
+            background: white;
         }
 
         .filter-group input:focus, .filter-group select:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
         }
 
+        .nominal-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        .nominal-group input {
+            flex: 1;
+        }
+
+        /* Bonus Keywords */
         .bonus-keywords {
-            background: #f8f9fa;
-            border-radius: 12px;
-            padding: 15px;
-            margin-top: 15px;
+            background: #f8fafc;
+            border-radius: 20px;
+            padding: 20px;
+            margin-top: 16px;
+            border: 1px solid #e2e8f0;
         }
 
         .bonus-keywords h4 {
             font-size: 0.9rem;
-            margin-bottom: 10px;
-            color: #666;
+            margin-bottom: 12px;
+            color: #475569;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .keyword-tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 10px;
+            margin-bottom: 16px;
         }
 
         .keyword-tag {
-            background: #e9ecef;
-            padding: 5px 12px;
-            border-radius: 20px;
+            background: white;
+            padding: 6px 16px;
+            border-radius: 40px;
             font-size: 0.8rem;
+            font-weight: 500;
             cursor: pointer;
             transition: all 0.2s;
+            border: 1.5px solid #e2e8f0;
+            color: #475569;
         }
 
         .keyword-tag:hover {
-            background: #667eea;
-            color: white;
+            border-color: #3b82f6;
+            background: #eff6ff;
         }
 
         .keyword-tag.active {
-            background: #10b981;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border-color: transparent;
             color: white;
         }
 
         .custom-keyword {
             display: flex;
-            gap: 8px;
-            margin-top: 10px;
+            gap: 10px;
+            margin-top: 12px;
         }
 
         .custom-keyword input {
             flex: 1;
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
+            padding: 10px 14px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 40px;
+            font-size: 0.85rem;
         }
 
         .custom-keyword button {
-            padding: 8px 16px;
-            background: #667eea;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 40px;
             cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
         }
 
-        /* Stats */
+        .custom-keyword button:hover {
+            transform: scale(1.02);
+        }
+
+        .active-keywords {
+            margin-top: 12px;
+            padding: 10px;
+            background: #eef2ff;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            color: #1e40af;
+        }
+
+        /* Statistics */
         .stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
-            margin-bottom: 30px;
+            margin-bottom: 32px;
         }
 
         .stat-card {
-            background: white;
-            border-radius: 16px;
-            padding: 16px;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 20px;
             text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .stat-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
         }
 
         .stat-number {
-            font-size: 2rem;
-            font-weight: bold;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #0f172a, #3b82f6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
         .stat-label {
-            color: #666;
+            color: #64748b;
             font-size: 0.8rem;
-            margin-top: 5px;
+            margin-top: 4px;
+            font-weight: 500;
         }
 
         /* Buttons */
         .button-group {
             display: flex;
-            gap: 15px;
+            gap: 16px;
             justify-content: center;
-            margin-bottom: 30px;
+            margin-bottom: 32px;
             flex-wrap: wrap;
         }
 
         .btn {
-            padding: 12px 28px;
+            padding: 14px 32px;
             font-size: 0.95rem;
             font-weight: 600;
             border: none;
-            border-radius: 50px;
+            border-radius: 60px;
             cursor: pointer;
             transition: all 0.3s;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            font-family: inherit;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
             color: white;
+            box-shadow: 0 4px 15px rgba(59,130,246,0.3);
         }
 
         .btn-primary:hover:not(:disabled) {
-            transform: scale(1.05);
-            box-shadow: 0 5px 20px rgba(102,126,234,0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59,130,246,0.4);
         }
 
         .btn-success {
-            background: #10b981;
+            background: linear-gradient(135deg, #10b981, #059669);
             color: white;
         }
 
         .btn-success:hover:not(:disabled) {
-            background: #059669;
-            transform: scale(1.05);
-        }
-
-        .btn-danger {
-            background: #ef4444;
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background: #dc2626;
-            transform: scale(1.05);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16,185,129,0.3);
         }
 
         .btn-warning {
-            background: #f59e0b;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
             color: white;
         }
 
         .btn-warning:hover {
-            background: #d97706;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
         }
 
         .btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
             transform: none;
+        }
+
+        /* Results */
+        .result-section {
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(10px);
+            border-radius: 28px;
+            padding: 28px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .result-header h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .result-badge {
+            background: #dbeafe;
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #1e40af;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f8fafc;
+            padding: 14px 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #475569;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #334155;
+            font-size: 0.85rem;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            color: #94a3b8;
+        }
+
+        /* Alert */
+        .alert {
+            padding: 14px 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+
+        .alert-info {
+            background: #e0f2fe;
+            color: #075985;
+            border-left: 4px solid #0ea5e9;
         }
 
         /* Loading */
@@ -323,20 +595,26 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 1000;
         }
 
+        .loading-content {
+            text-align: center;
+        }
+
         .spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid #667eea;
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255,255,255,0.2);
+            border-top: 4px solid #3b82f6;
             border-radius: 50%;
             animation: spin 1s linear infinite;
+            margin-bottom: 20px;
         }
 
         @keyframes spin {
@@ -344,94 +622,38 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Results */
-        .result-section {
-            background: white;
-            border-radius: 20px;
-            padding: 24px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            overflow-x: auto;
+        .loading p {
+            color: white;
+            font-size: 0.9rem;
         }
 
-        .result-section h3 {
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-            color: #333;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.85rem;
-        }
-
-        th {
-            background: #f8f9fa;
-            padding: 10px;
-            text-align: left;
-            font-weight: 600;
-            color: #555;
-            border-bottom: 2px solid #e5e7eb;
-        }
-
-        td {
-            padding: 10px;
-            border-bottom: 1px solid #e5e7eb;
-            color: #666;
-        }
-
-        tr:hover {
-            background: #faf5ff;
-        }
-
-        .alert {
-            padding: 14px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .alert-success {
-            background: #d1fae5;
-            color: #065f46;
-            border: 1px solid #a7f3d0;
-        }
-
-        .alert-error {
-            background: #fee2e2;
-            color: #991b1b;
-            border: 1px solid #fecaca;
-        }
-
-        .alert-info {
-            background: #e0f2fe;
-            color: #075985;
-            border: 1px solid #bae6fd;
-        }
-
+        /* Info Panel */
         .info-panel {
-            margin-top: 30px;
-            background: #fef9e3;
-            border-radius: 16px;
-            padding: 20px;
+            margin-top: 32px;
+            background: linear-gradient(135deg, #fef9e3, #fef3c7);
+            border-radius: 24px;
+            padding: 24px;
             border-left: 4px solid #f59e0b;
         }
 
         .info-panel h4 {
             color: #92400e;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
             font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .info-panel ul {
             list-style: none;
-            padding-left: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 12px;
         }
 
         .info-panel li {
-            padding: 5px 0;
+            padding: 6px 0;
             color: #b45309;
             font-size: 0.85rem;
             display: flex;
@@ -441,35 +663,47 @@
 
         footer {
             text-align: center;
-            margin-top: 30px;
-            padding: 20px;
-            color: white;
-            opacity: 0.8;
+            margin-top: 40px;
+            padding: 24px;
+            color: #64748b;
             font-size: 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
         }
 
         @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
             .upload-section {
                 grid-template-columns: 1fr;
             }
             .header h1 {
-                font-size: 1.5rem;
+                font-size: 1.8rem;
             }
             .btn {
-                padding: 8px 16px;
+                padding: 10px 20px;
                 font-size: 0.85rem;
             }
-            .filter-row {
+            .filter-grid {
                 grid-template-columns: 1fr;
+            }
+            .nominal-group {
+                flex-direction: column;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- Header -->
         <div class="header">
-            <h1>📊 SCB Deposit Filter</h1>
-            <p>Filter data deposit - Tampilkan user yang belum mendapatkan bonus deposit harian</p>
+            <div class="badge">
+                <i class="fas fa-star"></i> Professional Filter System
+            </div>
+            <h1>
+                <i class="fas fa-filter"></i> SCB Deposit Filter
+            </h1>
+            <p>Filter data deposit untuk menampilkan user yang belum mendapatkan bonus deposit harian</p>
         </div>
 
         <div id="alertContainer"></div>
@@ -477,49 +711,72 @@
         <!-- Upload Section -->
         <div class="upload-section">
             <div class="upload-card">
-                <h2><span>📁</span> Deposit History (Manual)</h2>
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-file-excel"></i>
+                    </div>
+                    <div>
+                        <h2>Deposit History (Manual)</h2>
+                        <p>Upload file Excel dengan data deposit manual</p>
+                    </div>
+                </div>
                 <div id="manualUploadArea" class="upload-area">
-                    <div class="upload-icon">📂</div>
-                    <p>Klik atau drag & drop file manual</p>
-                    <p style="font-size: 0.7rem; color: #999;">Format: .xlsx, .xls, .csv</p>
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <p style="font-weight: 500;">Klik atau drag & drop file di sini</p>
+                    <p style="font-size: 0.7rem; color: #94a3b8; margin-top: 8px;">Support: .xlsx, .xls, .csv</p>
                     <input type="file" id="manualFile" accept=".xlsx,.xls,.csv" style="display: none;">
                 </div>
                 <div id="manualFileInfo" style="display: none;" class="file-info">
-                    <span>📄 <span id="manualFileName"></span> (<span id="manualRowCount"></span> data)</span>
-                    <button class="remove-file" onclick="removeFile('manual')">Hapus</button>
+                    <span><i class="fas fa-check-circle"></i> <span id="manualFileName"></span> (<span id="manualRowCount"></span> records)</span>
+                    <button class="remove-file" onclick="removeFile('manual')"><i class="fas fa-trash-alt"></i> Hapus</button>
                 </div>
             </div>
 
             <div class="upload-card">
-                <h2><span>📱</span> Deposit History (QRPay)</h2>
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                    <div>
+                        <h2>Deposit History (QRPay)</h2>
+                        <p>Upload file Excel dengan data deposit QRPay</p>
+                    </div>
+                </div>
                 <div id="qrpayUploadArea" class="upload-area">
-                    <div class="upload-icon">📱</div>
-                    <p>Klik atau drag & drop file QRPay</p>
-                    <p style="font-size: 0.7rem; color: #999;">Format: .xlsx, .xls, .csv</p>
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <p style="font-weight: 500;">Klik atau drag & drop file di sini</p>
+                    <p style="font-size: 0.7rem; color: #94a3b8; margin-top: 8px;">Support: .xlsx, .xls, .csv</p>
                     <input type="file" id="qrpayFile" accept=".xlsx,.xls,.csv" style="display: none;">
                 </div>
                 <div id="qrpayFileInfo" style="display: none;" class="file-info">
-                    <span>📄 <span id="qrpayFileName"></span> (<span id="qrpayRowCount"></span> data)</span>
-                    <button class="remove-file" onclick="removeFile('qrpay')">Hapus</button>
+                    <span><i class="fas fa-check-circle"></i> <span id="qrpayFileName"></span> (<span id="qrpayRowCount"></span> records)</span>
+                    <button class="remove-file" onclick="removeFile('qrpay')"><i class="fas fa-trash-alt"></i> Hapus</button>
                 </div>
             </div>
         </div>
 
         <!-- Filter Panel -->
         <div class="filter-panel" id="filterPanel" style="display: none;">
-            <h3>🔧 Pengaturan Filter</h3>
+            <div class="filter-title">
+                <i class="fas fa-sliders-h"></i>
+                <h3>Pengaturan Filter</h3>
+            </div>
             
-            <div class="filter-row">
+            <div class="filter-grid">
                 <div class="filter-group">
-                    <label>💰 Filter Nominal Deposit (Min - Max)</label>
-                    <div style="display: flex; gap: 10px;">
-                        <input type="number" id="minNominal" placeholder="Minimal (contoh: 10000)" value="0" style="flex:1">
-                        <input type="number" id="maxNominal" placeholder="Maksimal (contoh: 5000000)" value="999999999" style="flex:1">
+                    <label><i class="fas fa-money-bill-wave"></i> Nominal Deposit (Min - Max)</label>
+                    <div class="nominal-group">
+                        <input type="number" id="minNominal" placeholder="Minimal" value="0">
+                        <input type="number" id="maxNominal" placeholder="Maksimal" value="999999999">
                     </div>
                 </div>
                 
                 <div class="filter-group">
-                    <label>📅 Filter Tanggal (YYYY-MM-DD)</label>
+                    <label><i class="fas fa-calendar-alt"></i> Rentang Tanggal</label>
                     <div style="display: flex; gap: 10px;">
                         <input type="date" id="startDate" placeholder="Tanggal Mulai" style="flex:1">
                         <input type="date" id="endDate" placeholder="Tanggal Akhir" style="flex:1">
@@ -528,19 +785,19 @@
             </div>
             
             <div class="bonus-keywords">
-                <h4>🏷️ Kata Kunci Bonus (Data Manual dengan To Bank mengandung kata kunci ini dianggap sudah dapat bonus)</h4>
+                <h4><i class="fas fa-tag"></i> Kata Kunci Bonus (Data manual dengan "To Bank" mengandung kata kunci ini dianggap sudah dapat bonus)</h4>
                 <div class="keyword-tags" id="keywordTags">
-                    <span class="keyword-tag active" data-keyword="BONUS DEPOSIT HARIAN">BONUS DEPOSIT HARIAN</span>
-                    <span class="keyword-tag" data-keyword="BONUS">BONUS</span>
-                    <span class="keyword-tag" data-keyword="DEPOSIT BONUS">DEPOSIT BONUS</span>
-                    <span class="keyword-tag" data-keyword="HARIAN">HARIAN</span>
+                    <span class="keyword-tag active" data-keyword="BONUS DEPOSIT HARIAN">🏷️ BONUS DEPOSIT HARIAN</span>
+                    <span class="keyword-tag" data-keyword="BONUS">🎁 BONUS</span>
+                    <span class="keyword-tag" data-keyword="DEPOSIT BONUS">💰 DEPOSIT BONUS</span>
+                    <span class="keyword-tag" data-keyword="HARIAN">📅 HARIAN</span>
                 </div>
                 <div class="custom-keyword">
                     <input type="text" id="customKeyword" placeholder="Tambah kata kunci sendiri...">
-                    <button onclick="addCustomKeyword()">Tambah</button>
+                    <button onclick="addCustomKeyword()"><i class="fas fa-plus"></i> Tambah</button>
                 </div>
-                <div id="activeKeywords" style="margin-top: 10px; font-size: 0.8rem; color: #666;">
-                    <strong>Active:</strong> BONUS DEPOSIT HARIAN
+                <div class="active-keywords" id="activeKeywords">
+                    <i class="fas fa-check-circle"></i> <strong>Active:</strong> BONUS DEPOSIT HARIAN
                 </div>
             </div>
         </div>
@@ -548,18 +805,22 @@
         <!-- Statistics -->
         <div class="stats" id="stats" style="display: none;">
             <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-database"></i></div>
                 <div class="stat-number" id="statManual">0</div>
                 <div class="stat-label">Total Data Manual</div>
             </div>
             <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-qrcode"></i></div>
                 <div class="stat-number" id="statQRPay">0</div>
                 <div class="stat-label">Total Data QRPay</div>
             </div>
             <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
                 <div class="stat-number" id="statFiltered">0</div>
                 <div class="stat-label">Setelah Filter Nominal</div>
             </div>
             <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-gift"></i></div>
                 <div class="stat-number" id="statResult">0</div>
                 <div class="stat-label">Belum Dapat Bonus</div>
             </div>
@@ -568,62 +829,72 @@
         <!-- Button Group -->
         <div class="button-group">
             <button id="filterBtn" class="btn btn-primary" disabled onclick="applyFilters()">
-                🔍 Filter Data
+                <i class="fas fa-search"></i> Filter Data
             </button>
             <button id="downloadBtn" class="btn btn-success" disabled onclick="downloadExcel()">
-                📥 Download Excel
+                <i class="fas fa-download"></i> Download Excel
             </button>
             <button class="btn btn-warning" onclick="resetFilters()">
-                🔄 Reset Filter
+                <i class="fas fa-undo-alt"></i> Reset Filter
             </button>
             <button class="btn btn-danger" onclick="resetAll()">
-                🗑️ Reset Semua
+                <i class="fas fa-trash-alt"></i> Reset Semua
             </button>
         </div>
 
-        <!-- Results Table -->
+        <!-- Results -->
         <div id="resultSection" class="result-section" style="display: none;">
-            <h3 id="resultTitle"></h3>
+            <div class="result-header">
+                <h3><i class="fas fa-table"></i> Hasil Filter</h3>
+                <div class="result-badge" id="resultBadge"></div>
+            </div>
             <div style="overflow-x: auto;">
                 <table id="resultTable">
                     <thead>
                         <tr>
-                            <th>User Name</th>
-                            <th>Deposit</th>
-                            <th>Date/Time</th>
-                            <th>Reference</th>
-                            <th>RRN</th>
+                            <th><i class="fas fa-user"></i> User Name</th>
+                            <th><i class="fas fa-money-bill"></i> Deposit</th>
+                            <th><i class="fas fa-calendar"></i> Date/Time</th>
+                            <th><i class="fas fa-hashtag"></i> Reference</th>
+                            <th><i class="fas fa-qrcode"></i> RRN</th>
                         </tr>
                     </thead>
-                    <tbody id="resultBody"></tbody>
+                    <tbody id="resultBody">
+                        <tr class="empty-state">
+                            <td colspan="5">Belum ada data. Upload file dan klik Filter Data</td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
         </div>
 
         <!-- Info Panel -->
         <div class="info-panel">
-            <h4>📌 Informasi Filter</h4>
+            <h4><i class="fas fa-info-circle"></i> Panduan Penggunaan</h4>
             <ul>
-                <li>✓ <strong>Step 1:</strong> Upload file Manual dan QRPay</li>
-                <li>✓ <strong>Step 2:</strong> Pilih kata kunci bonus (data manual dengan To Bank mengandung kata kunci = sudah dapat bonus)</li>
-                <li>✓ <strong>Step 3:</strong> Atur filter nominal deposit (min - max)</li>
-                <li>✓ <strong>Step 4:</strong> Atur filter tanggal (opsional)</li>
-                <li>✓ <strong>Step 5:</strong> Klik "Filter Data" untuk melihat hasil</li>
-                <li>✓ Hasil menampilkan user QRPay yang BELUM dapat bonus sesuai kriteria</li>
+                <li><i class="fas fa-upload"></i> <strong>Step 1:</strong> Upload file Manual Deposit dan QRPay Deposit</li>
+                <li><i class="fas fa-tag"></i> <strong>Step 2:</strong> Pilih kata kunci bonus (data manual dengan To Bank mengandung kata kunci = sudah dapat bonus)</li>
+                <li><i class="fas fa-chart-line"></i> <strong>Step 3:</strong> Atur filter nominal deposit (min - max)</li>
+                <li><i class="fas fa-calendar"></i> <strong>Step 4:</strong> Atur filter tanggal (opsional)</li>
+                <li><i class="fas fa-filter"></i> <strong>Step 5:</strong> Klik "Filter Data" untuk melihat hasil</li>
+                <li><i class="fas fa-download"></i> <strong>Step 6:</strong> Download hasil dalam format Excel</li>
             </ul>
         </div>
 
         <footer>
-            <p>SCB Deposit Filter © 2024 - Filter data deposit bonus harian dengan filter nominal dan tanggal</p>
+            <p><i class="fas fa-copyright"></i> 2024 SCB Deposit Filter Pro | Professional Filter System for Bonus Harian</p>
         </footer>
     </div>
 
     <div id="loading" style="display: none;" class="loading">
-        <div class="spinner"></div>
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p>Memproses data...</p>
+        </div>
     </div>
 
     <script>
-        // State
+        // State Management
         let manualData = null;
         let qrpayData = null;
         let filteredResult = null;
@@ -633,7 +904,7 @@
         function showAlert(message, type) {
             const alertDiv = document.createElement('div');
             alertDiv.className = `alert alert-${type}`;
-            alertDiv.innerHTML = `<span>${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}</span><span>${message}</span>`;
+            alertDiv.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i><span>${message}</span>`;
             document.getElementById('alertContainer').appendChild(alertDiv);
             setTimeout(() => alertDiv.remove(), 5000);
         }
@@ -658,6 +929,12 @@
             const date = new Date(str);
             if (!isNaN(date.getTime())) return date.toISOString().split('T')[0];
             return '';
+        }
+
+        function formatRupiah(value) {
+            const num = parseNumber(value);
+            if (num === 0 && value !== 0) return value;
+            return `Rp ${num.toLocaleString('id-ID')}`;
         }
 
         function readExcelFile(file) {
@@ -693,14 +970,14 @@
                     document.getElementById('manualRowCount').textContent = data.length;
                     document.getElementById('manualFileInfo').style.display = 'flex';
                     document.getElementById('statManual').textContent = data.length;
-                    showAlert(`✅ Berhasil upload ${data.length} data manual`, 'success');
+                    showAlert(`✓ Berhasil upload ${data.length} data manual`, 'success');
                 } else {
                     qrpayData = data;
                     document.getElementById('qrpayFileName').textContent = file.name;
                     document.getElementById('qrpayRowCount').textContent = data.length;
                     document.getElementById('qrpayFileInfo').style.display = 'flex';
                     document.getElementById('statQRPay').textContent = data.length;
-                    showAlert(`✅ Berhasil upload ${data.length} data QRPay`, 'success');
+                    showAlert(`✓ Berhasil upload ${data.length} data QRPay`, 'success');
                 }
                 
                 document.getElementById('stats').style.display = 'grid';
@@ -711,7 +988,7 @@
                 }
                 
             } catch (error) {
-                showAlert(`❌ Error: ${error.message}`, 'error');
+                showAlert(`✗ Error: ${error.message}`, 'error');
             } finally {
                 document.getElementById('loading').style.display = 'none';
             }
@@ -746,13 +1023,12 @@
             
             setTimeout(() => {
                 try {
-                    // Get filter values
                     const minNominal = parseFloat(document.getElementById('minNominal').value) || 0;
                     const maxNominal = parseFloat(document.getElementById('maxNominal').value) || Infinity;
                     const startDate = document.getElementById('startDate').value;
                     const endDate = document.getElementById('endDate').value;
                     
-                    // Step 1: Create Set of users who already got bonus
+                    // Create Set of users who already got bonus
                     const bonusSet = new Set();
                     
                     manualData.forEach(record => {
@@ -765,7 +1041,7 @@
                         }
                     });
                     
-                    // Step 2: Filter QRPay data
+                    // Filter QRPay data
                     let filtered = qrpayData.filter(record => {
                         const userName = String(record['User Name'] || '').trim().toLowerCase();
                         const date = extractDate(record['Date/Time']);
@@ -773,14 +1049,11 @@
                         
                         if (!userName || !date) return false;
                         
-                        // Check if already got bonus
                         const key = `${userName}|${date}`;
                         if (bonusSet.has(key)) return false;
                         
-                        // Check nominal filter
                         if (!isWithinNominal(deposit, minNominal, maxNominal)) return false;
                         
-                        // Check date filter
                         if (!isWithinDate(record['Date/Time'], startDate, endDate)) return false;
                         
                         return true;
@@ -794,33 +1067,24 @@
                     
                     filteredResult = filtered;
                     
-                    // Update stats
                     document.getElementById('statFiltered').textContent = filtered.length;
                     document.getElementById('statResult').textContent = filtered.length;
-                    document.getElementById('resultTitle').innerHTML = `📊 Hasil Filter: ${filtered.length} User Belum Dapat Bonus (Nominal: Rp${minNominal.toLocaleString()} - Rp${maxNominal.toLocaleString()})`;
+                    document.getElementById('resultBadge').innerHTML = `<i class="fas fa-chart-line"></i> ${filtered.length} User Belum Dapat Bonus | Nominal: ${formatRupiah(minNominal)} - ${formatRupiah(maxNominal)}`;
                     
-                    // Render table
                     const tbody = document.getElementById('resultBody');
                     tbody.innerHTML = '';
                     
                     if (filtered.length === 0) {
-                        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Tidak ada data yang sesuai dengan filter</td></tr>';
+                        tbody.innerHTML = '<tr class="empty-state"><td colspan="5"><i class="fas fa-inbox"></i> Tidak ada data yang sesuai dengan filter</td></tr>';
                     } else {
                         filtered.forEach(row => {
                             const tr = document.createElement('tr');
-                            let depositDisplay = row['Deposit'];
-                            if (typeof row['Deposit'] === 'number') {
-                                depositDisplay = `Rp ${row['Deposit'].toLocaleString('id-ID')}`;
-                            } else if (typeof row['Deposit'] === 'string') {
-                                const num = parseNumber(row['Deposit']);
-                                if (num > 0) depositDisplay = `Rp ${num.toLocaleString('id-ID')}`;
-                            }
                             tr.innerHTML = `
-                                <td style="font-weight: 500;">${escapeHtml(String(row['User Name']))}</td>
-                                <td>${escapeHtml(String(depositDisplay))}</td>
+                                <td style="font-weight: 600;">${escapeHtml(String(row['User Name']))}</td>
+                                <td><span class="badge-amount">${formatRupiah(row['Deposit'])}</span></td>
                                 <td>${escapeHtml(String(row['Date/Time']))}</td>
-                                <td><code>${escapeHtml(String(row['Reference']))}</code></td>
-                                <td><code>${escapeHtml(String(row['RRN']))}</code></td>
+                                <td><code style="background:#f1f5f9; padding:4px 8px; border-radius:8px;">${escapeHtml(String(row['Reference']))}</code></td>
+                                <td><code style="background:#f1f5f9; padding:4px 8px; border-radius:8px;">${escapeHtml(String(row['RRN']))}</code></td>
                             `;
                             tbody.appendChild(tr);
                         });
@@ -828,10 +1092,10 @@
                     
                     document.getElementById('resultSection').style.display = 'block';
                     document.getElementById('downloadBtn').disabled = false;
-                    showAlert(`✨ Ditemukan ${filtered.length} user belum dapat bonus dengan nominal Rp${minNominal.toLocaleString()} - Rp${maxNominal.toLocaleString()}`, 'success');
+                    showAlert(`✨ Ditemukan ${filtered.length} user belum dapat bonus`, 'success');
                     
                 } catch (error) {
-                    showAlert(`❌ Error filtering: ${error.message}`, 'error');
+                    showAlert(`✗ Error filtering: ${error.message}`, 'error');
                 } finally {
                     document.getElementById('loading').style.display = 'none';
                 }
@@ -851,11 +1115,19 @@
                 return;
             }
             
-            const ws = XLSX.utils.json_to_sheet(filteredResult);
+            const exportData = filteredResult.map(row => ({
+                'User Name': row['User Name'],
+                'Deposit': formatRupiah(row['Deposit']),
+                'Date/Time': row['Date/Time'],
+                'Reference': row['Reference'],
+                'RRN': row['RRN']
+            }));
+            
+            const ws = XLSX.utils.json_to_sheet(exportData);
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, 'Belum Dapat Bonus');
             XLSX.writeFile(wb, `deposit_belum_bonus_${new Date().toISOString().split('T')[0]}.xlsx`);
-            showAlert(`✅ Download ${filteredResult.length} data berhasil`, 'success');
+            showAlert(`✓ Download ${filteredResult.length} data berhasil`, 'success');
         };
 
         window.resetFilters = function() {
@@ -899,6 +1171,7 @@
             manualData = null;
             qrpayData = null;
             filteredResult = null;
+            activeKeywords = ['BONUS DEPOSIT HARIAN'];
             document.getElementById('manualFileInfo').style.display = 'none';
             document.getElementById('qrpayFileInfo').style.display = 'none';
             document.getElementById('manualFile').value = '';
@@ -916,11 +1189,21 @@
             document.getElementById('maxNominal').value = '999999999';
             document.getElementById('startDate').value = '';
             document.getElementById('endDate').value = '';
+            
+            // Reset keyword tags
+            document.querySelectorAll('.keyword-tag').forEach(tag => {
+                if (tag.dataset.keyword === 'BONUS DEPOSIT HARIAN') {
+                    tag.classList.add('active');
+                } else {
+                    tag.classList.remove('active');
+                }
+            });
+            updateActiveKeywordsDisplay();
             showAlert('🔄 Semua data telah direset', 'info');
         };
 
         function updateActiveKeywordsDisplay() {
-            document.getElementById('activeKeywords').innerHTML = `<strong>Active:</strong> ${activeKeywords.join(', ')}`;
+            document.getElementById('activeKeywords').innerHTML = `<i class="fas fa-check-circle"></i> <strong>Active:</strong> ${activeKeywords.join(', ')}`;
         }
 
         window.addCustomKeyword = function() {
@@ -930,7 +1213,7 @@
                 activeKeywords.push(keyword);
                 updateActiveKeywordsDisplay();
                 input.value = '';
-                showAlert(`✅ Kata kunci "${keyword}" ditambahkan`, 'success');
+                showAlert(`✓ Kata kunci "${keyword}" ditambahkan`, 'success');
             }
         };
 
@@ -965,17 +1248,17 @@
             
             area.addEventListener('dragover', (e) => {
                 e.preventDefault();
-                area.style.borderColor = '#667eea';
-                area.style.background = '#f5f3ff';
+                area.style.borderColor = '#3b82f6';
+                area.style.background = '#eff6ff';
             });
             area.addEventListener('dragleave', () => {
-                area.style.borderColor = '#ddd';
-                area.style.background = '#fafafa';
+                area.style.borderColor = '#cbd5e1';
+                area.style.background = '#f8fafc';
             });
             area.addEventListener('drop', (e) => {
                 e.preventDefault();
-                area.style.borderColor = '#ddd';
-                area.style.background = '#fafafa';
+                area.style.borderColor = '#cbd5e1';
+                area.style.background = '#f8fafc';
                 const file = e.dataTransfer.files[0];
                 if (file) handleFileUpload(file, type);
             });
