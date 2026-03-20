@@ -2,743 +2,425 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>SCB Premium Filter System - Multi File Upload</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCB Deposit Filter - Bonus & Withdraw Checker</title>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #0a0c1a 0%, #0f172a 50%, #0a0c1a 100%);
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            color: #e2e8f0;
-        }
-
-        /* Premium Background Effects */
-        .bg-gradient-blur {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            pointer-events: none;
-            z-index: 0;
-        }
-        .bg-gradient-blur::before {
-            content: '';
-            position: absolute;
-            top: 10%;
-            left: 10%;
-            width: 80%;
-            height: 80%;
-            background: radial-gradient(circle at 30% 40%, rgba(59,130,246,0.15) 0%, rgba(139,92,246,0.1) 50%, transparent 80%);
-            filter: blur(80px);
-        }
-
-        .container {
-            position: relative;
-            z-index: 1;
-            max-width: 1600px;
-            margin: 0 auto;
-            padding: 24px;
-        }
-
-        /* Header Premium */
-        .header {
-            text-align: center;
-            margin-bottom: 48px;
-            position: relative;
-        }
-        .header-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(59,130,246,0.2);
-            backdrop-filter: blur(10px);
-            padding: 6px 16px;
-            border-radius: 100px;
-            font-size: 0.75rem;
-            color: #60a5fa;
-            margin-bottom: 20px;
-            border: 1px solid rgba(59,130,246,0.3);
-        }
-        .header h1 {
-            font-size: 3rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #60a5fa, #a78bfa, #f472b6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 16px;
-            letter-spacing: -0.02em;
-        }
-        .header p {
-            color: #94a3b8;
-            font-size: 1rem;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        /* Stats Dashboard */
-        .stats-dashboard {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 16px;
-            margin-bottom: 32px;
-        }
-        .stat-card-premium {
-            background: rgba(15, 23, 42, 0.7);
-            backdrop-filter: blur(12px);
-            border-radius: 24px;
             padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        h1 {
             text-align: center;
-            border: 1px solid rgba(59,130,246,0.2);
-            transition: all 0.3s;
-        }
-        .stat-card-premium:hover {
-            border-color: rgba(59,130,246,0.5);
-            transform: translateY(-2px);
-        }
-        .stat-icon {
-            font-size: 28px;
-            margin-bottom: 12px;
-        }
-        .stat-value {
+            color: white;
+            margin-bottom: 30px;
             font-size: 2rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #60a5fa, #a78bfa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
         }
-        .stat-label {
-            font-size: 0.7rem;
-            color: #94a3b8;
-            margin-top: 6px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        /* Upload Sections Grid */
-        .upload-sections {
+        /* 3 Column Grid */
+        .grid-3 {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-            margin-bottom: 32px;
+            gap: 20px;
+            margin-bottom: 30px;
         }
-
-        .upload-card-premium {
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(12px);
-            border-radius: 28px;
-            padding: 24px;
-            border: 1px solid rgba(59,130,246,0.2);
-            transition: all 0.3s;
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
-        .upload-card-premium:hover {
-            border-color: rgba(59,130,246,0.5);
-            transform: translateY(-4px);
-        }
-
-        .card-header-premium {
+        .card h3 {
+            margin-bottom: 15px;
+            color: #333;
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid rgba(59,130,246,0.2);
+            gap: 10px;
         }
-        .card-icon-premium {
-            width: 52px;
-            height: 52px;
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-            border-radius: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            box-shadow: 0 8px 20px rgba(59,130,246,0.3);
-        }
-        .card-header-premium h2 {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #f1f5f9;
-        }
-        .card-header-premium p {
-            font-size: 0.7rem;
-            color: #94a3b8;
-            margin-top: 4px;
-        }
-
-        /* Multi File Upload Area */
-        .multi-upload-area {
-            border: 2px dashed rgba(59,130,246,0.4);
-            border-radius: 20px;
-            padding: 24px;
+        .upload-area {
+            border: 2px dashed #ccc;
+            border-radius: 12px;
+            padding: 30px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s;
-            background: rgba(30, 41, 59, 0.4);
-            margin-bottom: 16px;
+            background: #f9f9f9;
         }
-        .multi-upload-area:hover {
-            border-color: #3b82f6;
-            background: rgba(59,130,246,0.1);
+        .upload-area:hover {
+            border-color: #667eea;
+            background: #f0f0ff;
         }
-        .upload-icon-large {
-            font-size: 48px;
-            color: #3b82f6;
-            margin-bottom: 12px;
-        }
-        .multi-upload-area p {
-            color: #94a3b8;
-            font-size: 0.85rem;
-        }
-
-        /* File List */
         .file-list {
-            max-height: 200px;
+            margin-top: 15px;
+            max-height: 150px;
             overflow-y: auto;
-            margin-top: 12px;
         }
         .file-item {
-            background: rgba(30, 41, 59, 0.6);
-            border-radius: 12px;
-            padding: 10px 12px;
-            margin-bottom: 8px;
+            background: #f0f0f0;
+            padding: 8px 12px;
+            margin-bottom: 5px;
+            border-radius: 8px;
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            font-size: 0.8rem;
-            transition: all 0.2s;
+            font-size: 12px;
         }
-        .file-item:hover {
-            background: rgba(59,130,246,0.2);
-        }
-        .file-name {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #cbd5e1;
-        }
-        .file-name i {
-            color: #10b981;
-        }
-        .file-size {
-            font-size: 0.7rem;
-            color: #64748b;
-        }
-        .remove-file-btn {
-            background: none;
+        .remove-file {
+            background: #ff4444;
+            color: white;
             border: none;
-            color: #ef4444;
+            padding: 2px 8px;
+            border-radius: 4px;
             cursor: pointer;
-            padding: 4px 8px;
-            border-radius: 8px;
-            transition: all 0.2s;
         }
-        .remove-file-btn:hover {
-            background: rgba(239,68,68,0.2);
-        }
-        .total-badge {
-            margin-top: 12px;
+        .badge {
+            margin-top: 10px;
             padding: 8px;
-            background: rgba(16,185,129,0.15);
-            border-radius: 12px;
+            background: #e8f5e9;
+            border-radius: 8px;
             text-align: center;
-            font-size: 0.75rem;
-            color: #10b981;
+            font-size: 12px;
+            color: #2e7d32;
         }
-
-        /* Filter Panel Premium */
-        .filter-panel-premium {
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(12px);
-            border-radius: 28px;
-            padding: 28px;
-            margin-bottom: 32px;
-            border: 1px solid rgba(59,130,246,0.2);
+        /* Filter Panel */
+        .filter-panel {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
-        .filter-title-premium {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 24px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid rgba(59,130,246,0.2);
-        }
-        .filter-title-premium i {
-            font-size: 28px;
-            color: #3b82f6;
-        }
-        .filter-title-premium h3 {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #f1f5f9;
-        }
-        .filter-grid-premium {
+        .filter-row {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
-            margin-bottom: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
         }
-        .filter-group-premium {
+        .filter-group {
             display: flex;
             flex-direction: column;
             gap: 8px;
         }
-        .filter-group-premium label {
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: #94a3b8;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .filter-group-premium input {
-            padding: 12px 16px;
-            background: rgba(30, 41, 59, 0.8);
-            border: 1px solid rgba(59,130,246,0.3);
-            border-radius: 16px;
-            color: #f1f5f9;
-            font-size: 0.9rem;
-            transition: all 0.3s;
-        }
-        .filter-group-premium input:focus {
-            outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
-        }
-        .nominal-group {
-            display: flex;
-            gap: 12px;
-        }
-        .nominal-group input {
-            flex: 1;
-        }
-
-        /* Keywords Section */
-        .keywords-section {
-            background: rgba(30, 41, 59, 0.4);
-            border-radius: 20px;
-            padding: 20px;
-            margin-top: 16px;
-        }
-        .keywords-title {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 16px;
-            color: #94a3b8;
-            font-size: 0.85rem;
-        }
-        .keyword-tags-premium {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-        .keyword-tag-premium {
-            background: rgba(59,130,246,0.15);
-            padding: 6px 16px;
-            border-radius: 40px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 1px solid rgba(59,130,246,0.3);
-            color: #cbd5e1;
-        }
-        .keyword-tag-premium:hover {
-            background: rgba(59,130,246,0.3);
-        }
-        .keyword-tag-premium.active {
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-            border-color: transparent;
-            color: white;
-        }
-        .custom-keyword-premium {
-            display: flex;
-            gap: 12px;
-            margin-top: 16px;
-        }
-        .custom-keyword-premium input {
-            flex: 1;
-            padding: 10px 16px;
-            background: rgba(30, 41, 59, 0.8);
-            border: 1px solid rgba(59,130,246,0.3);
-            border-radius: 40px;
-            color: #f1f5f9;
-        }
-        .custom-keyword-premium button {
-            padding: 10px 24px;
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-            border: none;
-            border-radius: 40px;
-            color: white;
+        .filter-group label {
             font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
+            color: #555;
         }
-        .custom-keyword-premium button:hover {
-            transform: scale(1.02);
-        }
-        .active-keywords-premium {
-            margin-top: 16px;
+        .filter-group input {
             padding: 10px;
-            background: rgba(59,130,246,0.1);
-            border-radius: 12px;
-            font-size: 0.75rem;
-            color: #60a5fa;
+            border: 1px solid #ddd;
+            border-radius: 8px;
         }
-
-        /* Action Buttons */
-        .action-buttons {
+        .keyword-tags {
             display: flex;
-            gap: 16px;
-            justify-content: center;
-            margin-bottom: 32px;
             flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
         }
-        .btn-premium {
-            padding: 14px 32px;
-            font-size: 0.9rem;
+        .keyword-tag {
+            background: #e0e0e0;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .keyword-tag.active {
+            background: #667eea;
+            color: white;
+        }
+        .custom-keyword {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .custom-keyword input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .custom-keyword button {
+            padding: 8px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 28px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+        }
+        /* Buttons */
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        button {
+            padding: 12px 30px;
+            font-size: 14px;
             font-weight: 600;
             border: none;
-            border-radius: 60px;
+            border-radius: 8px;
             cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
             transition: all 0.3s;
-            font-family: inherit;
         }
-        .btn-primary-premium {
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-            color: white;
-            box-shadow: 0 4px 15px rgba(59,130,246,0.3);
-        }
-        .btn-primary-premium:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(59,130,246,0.4);
-        }
-        .btn-success-premium {
-            background: linear-gradient(135deg, #10b981, #059669);
+        .btn-filter {
+            background: #667eea;
             color: white;
         }
-        .btn-warning-premium {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
+        .btn-filter:hover {
+            background: #5a67d8;
+        }
+        .btn-download {
+            background: #48bb78;
             color: white;
         }
-        .btn-danger-premium {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
+        .btn-download:hover {
+            background: #38a169;
+        }
+        .btn-reset {
+            background: #ed8936;
             color: white;
         }
-        .btn-premium:disabled {
+        .btn-clear {
+            background: #fc8181;
+            color: white;
+        }
+        button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
-            transform: none;
         }
-
-        /* Results Table Premium */
-        .results-premium {
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(12px);
-            border-radius: 28px;
-            padding: 28px;
+        /* Results Table */
+        .results {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
             overflow-x: auto;
-            border: 1px solid rgba(59,130,246,0.2);
-        }
-        .results-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-        .results-header h3 {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #f1f5f9;
-        }
-        .results-badge {
-            background: rgba(59,130,246,0.2);
-            padding: 6px 14px;
-            border-radius: 40px;
-            font-size: 0.75rem;
-            color: #60a5fa;
         }
         table {
             width: 100%;
             border-collapse: collapse;
         }
-        th {
+        th, td {
+            padding: 12px;
             text-align: left;
-            padding: 14px 12px;
-            background: rgba(30, 41, 59, 0.6);
-            color: #94a3b8;
-            font-size: 0.7rem;
+            border-bottom: 1px solid #eee;
+        }
+        th {
+            background: #f8f9fa;
             font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 1px solid rgba(59,130,246,0.2);
         }
-        td {
-            padding: 14px 12px;
-            border-bottom: 1px solid rgba(59,130,246,0.1);
-            color: #cbd5e1;
-            font-size: 0.85rem;
-        }
-        tr:hover {
-            background: rgba(59,130,246,0.05);
-        }
-        .status-eligible {
-            background: rgba(16,185,129,0.2);
-            color: #10b981;
-            padding: 4px 12px;
+        .status-badge {
+            background: #c6f6d5;
+            color: #22543d;
+            padding: 4px 10px;
             border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: 600;
+            font-size: 12px;
             display: inline-block;
         }
-
-        /* Alert */
-        .alert-premium {
-            padding: 14px 20px;
-            border-radius: 20px;
-            margin-bottom: 24px;
+        .alert {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
             display: flex;
             align-items: center;
-            gap: 12px;
-            animation: slideIn 0.3s ease;
+            gap: 10px;
         }
-        @keyframes slideIn {
-            from { transform: translateX(-20px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+        .alert-success {
+            background: #c6f6d5;
+            color: #22543d;
         }
-        .alert-success-premium { background: rgba(16,185,129,0.2); border-left: 3px solid #10b981; color: #10b981; }
-        .alert-error-premium { background: rgba(239,68,68,0.2); border-left: 3px solid #ef4444; color: #ef4444; }
-        .alert-info-premium { background: rgba(59,130,246,0.2); border-left: 3px solid #3b82f6; color: #60a5fa; }
-
-        /* Loading */
-        .loading-premium {
+        .alert-error {
+            background: #fed7d7;
+            color: #9b2c2c;
+        }
+        .alert-info {
+            background: #bee3f8;
+            color: #2c5282;
+        }
+        .loading {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(8px);
+            background: rgba(0,0,0,0.7);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 1000;
         }
-        .loading-content {
-            text-align: center;
-        }
-        .spinner-premium {
-            width: 60px;
-            height: 60px;
-            border: 3px solid rgba(59,130,246,0.3);
-            border-top: 3px solid #3b82f6;
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #667eea;
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin-bottom: 20px;
         }
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-
-        /* Info Panel */
-        .info-panel-premium {
-            margin-top: 32px;
-            background: rgba(59,130,246,0.1);
-            border-radius: 24px;
-            padding: 24px;
-            border: 1px solid rgba(59,130,246,0.2);
-        }
-        .info-panel-premium h4 {
-            color: #60a5fa;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 16px;
-        }
-        .info-grid li {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: #94a3b8;
-            font-size: 0.8rem;
-            padding: 6px 0;
+        .info-panel {
+            margin-top: 20px;
+            background: #fff3e0;
+            border-radius: 12px;
+            padding: 15px;
+            font-size: 12px;
         }
         footer {
             text-align: center;
-            margin-top: 40px;
-            padding: 24px;
-            color: #475569;
-            font-size: 0.7rem;
-            border-top: 1px solid rgba(59,130,246,0.1);
+            margin-top: 30px;
+            color: white;
+            font-size: 12px;
         }
-
-        @media (max-width: 1024px) {
-            .upload-sections {
+        @media (max-width: 900px) {
+            .grid-3 {
                 grid-template-columns: 1fr;
             }
-            .header h1 {
-                font-size: 2rem;
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
     </style>
 </head>
 <body>
-    <div class="bg-gradient-blur"></div>
     <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <div class="header-badge">
-                <i class="fas fa-crown"></i> PREMIUM FILTER SYSTEM
-                <i class="fas fa-star" style="font-size: 10px;"></i>
-            </div>
-            <h1><i class="fas fa-filter"></i> SCB Premium Filter</h1>
-            <p>Multi-file upload system | Filter user yang BELUM dapat bonus & BELUM withdraw</p>
-        </div>
+        <h1>📊 SCB Deposit Filter</h1>
+        <p style="text-align:center; color:white; margin-bottom:20px;">Filter user yang BELUM dapat bonus & BELUM withdraw</p>
 
         <div id="alertContainer"></div>
 
-        <!-- Stats Dashboard -->
-        <div class="stats-dashboard" id="statsDashboard" style="display: none;">
-            <div class="stat-card-premium"><div class="stat-icon"><i class="fas fa-file-excel"></i></div><div class="stat-value" id="statManualTotal">0</div><div class="stat-label">Total File Manual</div></div>
-            <div class="stat-card-premium"><div class="stat-icon"><i class="fas fa-qrcode"></i></div><div class="stat-value" id="statQRTotal">0</div><div class="stat-label">Total File QRPay</div></div>
-            <div class="stat-card-premium"><div class="stat-icon"><i class="fas fa-money-bill-wave"></i></div><div class="stat-value" id="statWDTotal">0</div><div class="stat-label">Total File Withdraw</div></div>
-            <div class="stat-card-premium"><div class="stat-icon"><i class="fas fa-database"></i></div><div class="stat-value" id="statManualRecords">0</div><div class="stat-label">Records Manual</div></div>
-            <div class="stat-card-premium"><div class="stat-icon"><i class="fas fa-database"></i></div><div class="stat-value" id="statQRRecords">0</div><div class="stat-label">Records QRPay</div></div>
-            <div class="stat-card-premium"><div class="stat-icon"><i class="fas fa-database"></i></div><div class="stat-value" id="statWDRecords">0</div><div class="stat-label">Records Withdraw</div></div>
-            <div class="stat-card-premium"><div class="stat-icon"><i class="fas fa-gift"></i></div><div class="stat-value" id="statBonusCount">0</div><div class="stat-label">Sudah Dapat Bonus</div></div>
-            <div class="stat-card-premium"><div class="stat-icon"><i class="fas fa-arrow-up"></i></div><div class="stat-value" id="statWDCount">0</div><div class="stat-label">Sudah Withdraw</div></div>
-            <div class="stat-card-premium"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-value" id="statResultCount">0</div><div class="stat-label">Eligible Users</div></div>
-        </div>
-
-        <!-- Upload Sections - 3 Categories with Multi File Support -->
-        <div class="upload-sections">
+        <!-- 3 Upload Sections -->
+        <div class="grid-3">
             <!-- Manual Deposit -->
-            <div class="upload-card-premium">
-                <div class="card-header-premium">
-                    <div class="card-icon-premium"><i class="fas fa-file-excel"></i></div>
-                    <div><h2>📁 Manual Deposit</h2><p>Upload 1 atau lebih file Excel</p></div>
+            <div class="card">
+                <h3>📁 Manual Deposit</h3>
+                <div id="manualArea" class="upload-area" onclick="document.getElementById('manualInput').click()">
+                    <div style="font-size:40px;">📂</div>
+                    <p>Klik untuk upload file</p>
+                    <small>.xlsx, .xls, .csv</small>
+                    <input type="file" id="manualInput" accept=".xlsx,.xls,.csv" multiple style="display:none">
                 </div>
-                <div id="manualUploadArea" class="multi-upload-area">
-                    <div class="upload-icon-large"><i class="fas fa-cloud-upload-alt"></i></div>
-                    <p>Klik atau drag & drop file di sini</p>
-                    <p style="font-size: 0.7rem; margin-top: 6px;">Support: .xlsx, .xls, .csv | Multi file</p>
-                    <input type="file" id="manualFileInput" accept=".xlsx,.xls,.csv" multiple style="display: none;">
-                </div>
-                <div id="manualFileList" class="file-list"></div>
-                <div id="manualTotalBadge" class="total-badge" style="display: none;"></div>
+                <div id="manualFiles" class="file-list"></div>
+                <div id="manualBadge" class="badge" style="display:none"></div>
             </div>
 
             <!-- QRPay Deposit -->
-            <div class="upload-card-premium">
-                <div class="card-header-premium">
-                    <div class="card-icon-premium"><i class="fas fa-qrcode"></i></div>
-                    <div><h2>📱 QRPay Deposit</h2><p>Upload 1 atau lebih file Excel</p></div>
+            <div class="card">
+                <h3>📱 QRPay Deposit</h3>
+                <div id="qrpayArea" class="upload-area" onclick="document.getElementById('qrpayInput').click()">
+                    <div style="font-size:40px;">📱</div>
+                    <p>Klik untuk upload file</p>
+                    <small>.xlsx, .xls, .csv</small>
+                    <input type="file" id="qrpayInput" accept=".xlsx,.xls,.csv" multiple style="display:none">
                 </div>
-                <div id="qrpayUploadArea" class="multi-upload-area">
-                    <div class="upload-icon-large"><i class="fas fa-cloud-upload-alt"></i></div>
-                    <p>Klik atau drag & drop file di sini</p>
-                    <p style="font-size: 0.7rem; margin-top: 6px;">Support: .xlsx, .xls, .csv | Multi file</p>
-                    <input type="file" id="qrpayFileInput" accept=".xlsx,.xls,.csv" multiple style="display: none;">
-                </div>
-                <div id="qrpayFileList" class="file-list"></div>
-                <div id="qrpayTotalBadge" class="total-badge" style="display: none;"></div>
+                <div id="qrpayFiles" class="file-list"></div>
+                <div id="qrpayBadge" class="badge" style="display:none"></div>
             </div>
 
             <!-- Withdraw History -->
-            <div class="upload-card-premium">
-                <div class="card-header-premium">
-                    <div class="card-icon-premium"><i class="fas fa-money-bill-wave"></i></div>
-                    <div><h2>💰 Withdraw History</h2><p>Upload 1 atau lebih file Excel</p></div>
+            <div class="card">
+                <h3>💰 Withdraw History</h3>
+                <div id="withdrawArea" class="upload-area" onclick="document.getElementById('withdrawInput').click()">
+                    <div style="font-size:40px;">💸</div>
+                    <p>Klik untuk upload file</p>
+                    <small>.xlsx, .xls, .csv</small>
+                    <input type="file" id="withdrawInput" accept=".xlsx,.xls,.csv" multiple style="display:none">
                 </div>
-                <div id="withdrawUploadArea" class="multi-upload-area">
-                    <div class="upload-icon-large"><i class="fas fa-cloud-upload-alt"></i></div>
-                    <p>Klik atau drag & drop file di sini</p>
-                    <p style="font-size: 0.7rem; margin-top: 6px;">Support: .xlsx, .xls, .csv | Multi file</p>
-                    <input type="file" id="withdrawFileInput" accept=".xlsx,.xls,.csv" multiple style="display: none;">
-                </div>
-                <div id="withdrawFileList" class="file-list"></div>
-                <div id="withdrawTotalBadge" class="total-badge" style="display: none;"></div>
+                <div id="withdrawFiles" class="file-list"></div>
+                <div id="withdrawBadge" class="badge" style="display:none"></div>
             </div>
         </div>
 
         <!-- Filter Panel -->
-        <div class="filter-panel-premium" id="filterPanel" style="display: none;">
-            <div class="filter-title-premium">
-                <i class="fas fa-sliders-h"></i>
-                <h3>Advanced Filter Configuration</h3>
-            </div>
-            <div class="filter-grid-premium">
-                <div class="filter-group-premium">
-                    <label><i class="fas fa-money-bill-wave"></i> Nominal Deposit (Min - Max)</label>
-                    <div class="nominal-group">
-                        <input type="number" id="minNominal" placeholder="Minimal" value="0">
-                        <input type="number" id="maxNominal" placeholder="Maksimal" value="999999999">
+        <div class="filter-panel" id="filterPanel" style="display:none">
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label>💰 Nominal Deposit (Min - Max)</label>
+                    <div style="display:flex; gap:10px;">
+                        <input type="number" id="minNominal" placeholder="Min" value="0">
+                        <input type="number" id="maxNominal" placeholder="Max" value="999999999">
                     </div>
                 </div>
-                <div class="filter-group-premium">
-                    <label><i class="fas fa-calendar-alt"></i> Rentang Tanggal Deposit</label>
-                    <div style="display: flex; gap: 10px;">
-                        <input type="date" id="startDate" style="flex:1">
-                        <input type="date" id="endDate" style="flex:1">
+                <div class="filter-group">
+                    <label>📅 Tanggal Deposit</label>
+                    <div style="display:flex; gap:10px;">
+                        <input type="date" id="startDate">
+                        <input type="date" id="endDate">
                     </div>
                 </div>
             </div>
 
-            <div class="keywords-section">
-                <div class="keywords-title"><i class="fas fa-tag"></i> Kata Kunci Bonus (To Bank mengandung kata kunci ini = sudah dapat bonus)</div>
-                <div class="keyword-tags-premium" id="keywordTags">
-                    <span class="keyword-tag-premium active" data-keyword="BONUS DEPOSIT HARIAN">🏷️ BONUS DEPOSIT HARIAN</span>
-                    <span class="keyword-tag-premium active" data-keyword="SCB A BONUS">🏷️ SCB A BONUS DEPOSIT HARIAN</span>
-                    <span class="keyword-tag-premium" data-keyword="BONUS">🎁 BONUS</span>
-                    <span class="keyword-tag-premium" data-keyword="DEPOSIT BONUS">💰 DEPOSIT BONUS</span>
+            <div style="margin-top:15px">
+                <label>🏷️ Kata Kunci Bonus (To Bank mengandung ini = sudah dapat bonus)</label>
+                <div class="keyword-tags" id="keywordTags">
+                    <span class="keyword-tag active" data-keyword="BONUS DEPOSIT HARIAN">BONUS DEPOSIT HARIAN</span>
+                    <span class="keyword-tag" data-keyword="SCB A BONUS">SCB A BONUS DEPOSIT HARIAN</span>
+                    <span class="keyword-tag" data-keyword="BONUS">BONUS</span>
                 </div>
-                <div class="custom-keyword-premium">
-                    <input type="text" id="customKeyword" placeholder="Tambah kata kunci sendiri...">
-                    <button onclick="addCustomKeyword()"><i class="fas fa-plus"></i> Tambah</button>
+                <div class="custom-keyword">
+                    <input type="text" id="customKeyword" placeholder="Tambah kata kunci...">
+                    <button onclick="addKeyword()">Tambah</button>
                 </div>
-                <div class="active-keywords-premium" id="activeKeywords">
-                    <i class="fas fa-check-circle"></i> <strong>Active Keywords:</strong> BONUS DEPOSIT HARIAN, SCB A BONUS DEPOSIT HARIAN
+                <div id="activeKeywordsDisplay" style="margin-top:10px; font-size:12px; color:#666;">
+                    Active: BONUS DEPOSIT HARIAN, SCB A BONUS DEPOSIT HARIAN
                 </div>
             </div>
         </div>
 
-        <!-- Action Buttons -->
-        <div class="action-buttons">
-            <button id="filterBtn" class="btn-premium btn-primary-premium" disabled onclick="applyFilters()"><i class="fas fa-search"></i> Filter Data</button>
-            <button id="downloadBtn" class="btn-premium btn-success-premium" disabled onclick="downloadExcel()"><i class="fas fa-download"></i> Download Excel</button>
-            <button class="btn-premium btn-warning-premium" onclick="resetFilters()"><i class="fas fa-undo-alt"></i> Reset Filter</button>
-            <button class="btn-premium btn-danger-premium" onclick="resetAll()"><i class="fas fa-trash-alt"></i> Reset Semua</button>
+        <!-- Statistics -->
+        <div class="stats" id="stats" style="display:none">
+            <div class="stat-card"><div class="stat-number" id="statManualRec">0</div><div class="stat-label">Records Manual</div></div>
+            <div class="stat-card"><div class="stat-number" id="statQRRec">0</div><div class="stat-label">Records QRPay</div></div>
+            <div class="stat-card"><div class="stat-number" id="statWDRec">0</div><div class="stat-label">Records Withdraw</div></div>
+            <div class="stat-card"><div class="stat-number" id="statResult">0</div><div class="stat-label">Eligible Users</div></div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="buttons">
+            <button id="filterBtn" class="btn-filter" disabled onclick="filterData()">🔍 Filter Data</button>
+            <button id="downloadBtn" class="btn-download" disabled onclick="downloadExcel()">📥 Download Excel</button>
+            <button class="btn-reset" onclick="resetFilters()">🔄 Reset Filter</button>
+            <button class="btn-clear" onclick="clearAll()">🗑️ Clear All</button>
         </div>
 
         <!-- Results -->
-        <div id="resultSection" class="results-premium" style="display: none;">
-            <div class="results-header">
-                <h3><i class="fas fa-trophy"></i> Eligible Users (Belum Bonus & Belum Withdraw)</h3>
-                <div class="results-badge" id="resultBadge"></div>
-            </div>
-            <div style="overflow-x: auto;">
+        <div id="results" class="results" style="display:none">
+            <h3 style="margin-bottom:15px">✅ User Eligible (Belum Bonus & Belum Withdraw)</h3>
+            <div style="overflow-x:auto">
                 <table id="resultTable">
                     <thead>
                         <tr><th>User Name</th><th>Deposit</th><th>Date/Time</th><th>Reference</th><th>RRN</th><th>Status</th></tr>
@@ -748,79 +430,62 @@
             </div>
         </div>
 
-        <!-- Info Panel -->
-        <div class="info-panel-premium">
-            <h4><i class="fas fa-info-circle"></i> Premium Filter Logic</h4>
-            <div class="info-grid">
-                <li><i class="fas fa-check-circle" style="color:#10b981"></i> <strong>Multi File Upload:</strong> Upload multiple Excel files per kategori</li>
-                <li><i class="fas fa-tag"></i> <strong>Bonus Detection:</strong> Manual data dengan To Bank mengandung kata kunci = sudah dapat bonus</li>
-                <li><i class="fas fa-arrow-up"></i> <strong>Withdraw Detection:</strong> User yang sudah withdraw akan difilter otomatis</li>
-                <li><i class="fas fa-chart-line"></i> <strong>Nominal Filter:</strong> Atur range nominal deposit yang diinginkan</li>
-                <li><i class="fas fa-calendar"></i> <strong>Date Filter:</strong> Filter berdasarkan tanggal deposit</li>
-                <li><i class="fas fa-download"></i> <strong>Export:</strong> Download hasil filter ke Excel</li>
-            </div>
+        <div class="info-panel">
+            <strong>📌 Cara Penggunaan:</strong><br>
+            1. Upload file Manual Deposit (Excel dengan kolom: User Name, To Bank, Date/Time)<br>
+            2. Upload file QRPay Deposit (Excel dengan kolom: User Name, Deposit, Date/Time, Reference, RRN)<br>
+            3. Upload file Withdraw History (Excel dengan kolom: User Name, Date/Time)<br>
+            4. Pilih kata kunci bonus (yang muncul di To Bank)<br>
+            5. Atur filter nominal & tanggal (opsional)<br>
+            6. Klik "Filter Data" untuk melihat hasil<br>
+            7. Download hasil ke Excel
         </div>
 
-        <footer>
-            <p><i class="fas fa-crown"></i> SCB Premium Filter System © 2024 | Multi-File Upload | Advanced Filter Logic</p>
-        </footer>
+        <footer>SCB Deposit Filter © 2024 | Filter berdasarkan Bonus & Withdraw</footer>
     </div>
 
-    <div id="loading" style="display: none;" class="loading-premium">
-        <div class="loading-content"><div class="spinner-premium"></div><p style="color:white">Memproses multiple files...</p></div>
-    </div>
+    <div id="loading" style="display:none" class="loading"><div class="spinner"></div></div>
 
     <script>
-        // Data Storage - Multi file support
-        let manualFilesData = []; // Array of {name, data, records}
-        let qrpayFilesData = [];
-        let withdrawFilesData = [];
-        
-        let combinedManualData = [];
-        let combinedQRData = [];
-        let combinedWithdrawData = [];
-        
-        let filteredResult = null;
+        // Data storage
+        let manualRecords = [];
+        let qrpayRecords = [];
+        let withdrawRecords = [];
+        let filteredData = [];
         let activeKeywords = ['BONUS DEPOSIT HARIAN', 'SCB A BONUS DEPOSIT HARIAN'];
 
-        // Helper Functions
+        // Helper functions
         function showAlert(msg, type) {
             const div = document.createElement('div');
-            div.className = `alert-premium alert-${type}-premium`;
-            div.innerHTML = `<i class="fas ${type==='success'?'fa-check-circle':type==='error'?'fa-exclamation-circle':'fa-info-circle'}"></i> ${msg}`;
+            div.className = `alert alert-${type}`;
+            div.innerHTML = `<span>${type === 'success' ? '✓' : type === 'error' ? '✗' : 'ℹ'}</span> ${msg}`;
             document.getElementById('alertContainer').appendChild(div);
-            setTimeout(() => div.remove(), 5000);
-        }
-
-        function formatFileSize(bytes) {
-            if (bytes < 1024) return bytes + ' B';
-            if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB';
-            return (bytes/(1024*1024)).toFixed(1) + ' MB';
+            setTimeout(() => div.remove(), 4000);
         }
 
         function parseNumber(v) {
-            if(typeof v === 'number') return v;
-            if(typeof v === 'string') {
+            if (typeof v === 'number') return v;
+            if (typeof v === 'string') {
                 let cleaned = v.replace(/[^0-9.-]/g, '');
                 let num = parseFloat(cleaned);
-                if(!isNaN(num)) return num;
+                if (!isNaN(num)) return num;
             }
             return 0;
         }
 
         function extractDate(dt) {
-            if(!dt) return '';
+            if (!dt) return '';
             let str = String(dt);
             let match = str.match(/\d{4}-\d{2}-\d{2}/);
-            if(match) return match[0];
+            if (match) return match[0];
             let matchDMY = str.match(/(\d{2})\/(\d{2})\/(\d{4})/);
-            if(matchDMY) return `${matchDMY[3]}-${matchDMY[2]}-${matchDMY[1]}`;
+            if (matchDMY) return `${matchDMY[3]}-${matchDMY[2]}-${matchDMY[1]}`;
             let date = new Date(str);
-            if(!isNaN(date.getTime())) return date.toISOString().split('T')[0];
-            return '';
+            if (!isNaN(date.getTime())) return date.toISOString().split('T')[0];
+            return str.split(' ')[0];
         }
 
-        function readExcelFile(file) {
+        function readExcel(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.onload = (e) => {
@@ -830,144 +495,78 @@
                         const sheet = workbook.Sheets[workbook.SheetNames[0]];
                         const json = XLSX.utils.sheet_to_json(sheet);
                         resolve(json);
-                    } catch(err) { reject(err); }
+                    } catch (err) {
+                        reject(err);
+                    }
                 };
                 reader.onerror = reject;
                 reader.readAsArrayBuffer(file);
             });
         }
 
-        async function handleMultipleFiles(files, type) {
-            if(!files || files.length === 0) return;
+        async function handleFiles(files, type) {
+            if (!files.length) return;
             document.getElementById('loading').style.display = 'flex';
             
-            let successCount = 0;
-            let errorCount = 0;
             let allRecords = [];
+            let fileList = [];
             
-            for(let file of files) {
+            for (let file of files) {
                 try {
-                    const data = await readExcelFile(file);
+                    const data = await readExcel(file);
                     allRecords.push(...data);
-                    
-                    if(type === 'manual') {
-                        manualFilesData.push({ name: file.name, size: file.size, records: data.length });
-                        combinedManualData = allRecords;
-                    } else if(type === 'qrpay') {
-                        qrpayFilesData.push({ name: file.name, size: file.size, records: data.length });
-                        combinedQRData = allRecords;
-                    } else if(type === 'withdraw') {
-                        withdrawFilesData.push({ name: file.name, size: file.size, records: data.length });
-                        combinedWithdrawData = allRecords;
-                    }
-                    successCount++;
-                } catch(err) {
-                    errorCount++;
+                    fileList.push({ name: file.name, size: file.size, count: data.length });
+                } catch (err) {
                     showAlert(`Error: ${file.name} - ${err.message}`, 'error');
                 }
             }
             
-            updateFileList(type);
-            updateStats();
-            
-            if(successCount > 0) {
-                showAlert(`✓ ${type.toUpperCase()}: ${successCount} file, ${allRecords.length} records`, 'success');
+            if (type === 'manual') {
+                manualRecords = allRecords;
+                updateFileList('manual', fileList);
+                document.getElementById('manualBadge').innerHTML = `📊 Total: ${manualRecords.length} records`;
+                document.getElementById('manualBadge').style.display = 'block';
+                document.getElementById('statManualRec').textContent = manualRecords.length;
+            } else if (type === 'qrpay') {
+                qrpayRecords = allRecords;
+                updateFileList('qrpay', fileList);
+                document.getElementById('qrpayBadge').innerHTML = `📊 Total: ${qrpayRecords.length} records`;
+                document.getElementById('qrpayBadge').style.display = 'block';
+                document.getElementById('statQRRec').textContent = qrpayRecords.length;
+            } else if (type === 'withdraw') {
+                withdrawRecords = allRecords;
+                updateFileList('withdraw', fileList);
+                document.getElementById('withdrawBadge').innerHTML = `📊 Total: ${withdrawRecords.length} records`;
+                document.getElementById('withdrawBadge').style.display = 'block';
+                document.getElementById('statWDRec').textContent = withdrawRecords.length;
             }
             
-            if(combinedManualData.length > 0 && combinedQRData.length > 0 && combinedWithdrawData.length > 0) {
-                document.getElementById('filterBtn').disabled = false;
-                document.getElementById('filterPanel').style.display = 'block';
-                document.getElementById('statsDashboard').style.display = 'grid';
-            }
-            
+            updateStatsAndButtons();
             document.getElementById('loading').style.display = 'none';
+            showAlert(`✓ ${type.toUpperCase()}: ${allRecords.length} records`, 'success');
         }
 
-        function updateFileList(type) {
-            let filesData, listId, totalBadgeId, fileInput;
-            if(type === 'manual') {
-                filesData = manualFilesData;
-                listId = 'manualFileList';
-                totalBadgeId = 'manualTotalBadge';
-                fileInput = document.getElementById('manualFileInput');
-            } else if(type === 'qrpay') {
-                filesData = qrpayFilesData;
-                listId = 'qrpayFileList';
-                totalBadgeId = 'qrpayTotalBadge';
-                fileInput = document.getElementById('qrpayFileInput');
-            } else {
-                filesData = withdrawFilesData;
-                listId = 'withdrawFileList';
-                totalBadgeId = 'withdrawTotalBadge';
-                fileInput = document.getElementById('withdrawFileInput');
-            }
-            
-            const container = document.getElementById(listId);
-            const totalRecords = filesData.reduce((sum, f) => sum + f.records, 0);
-            
-            if(filesData.length === 0) {
+        function updateFileList(type, files) {
+            const container = document.getElementById(`${type}Files`);
+            if (files.length === 0) {
                 container.innerHTML = '';
-                document.getElementById(totalBadgeId).style.display = 'none';
                 return;
             }
-            
-            container.innerHTML = filesData.map((f, idx) => `
+            container.innerHTML = files.map(f => `
                 <div class="file-item">
-                    <div class="file-name"><i class="fas fa-file-excel"></i> ${f.name}</div>
-                    <div style="display: flex; gap: 12px; align-items: center;">
-                        <span class="file-size">${f.records} records | ${formatFileSize(f.size)}</span>
-                        <button class="remove-file-btn" onclick="removeSingleFile('${type}', ${idx})"><i class="fas fa-trash-alt"></i></button>
-                    </div>
+                    <span>📄 ${f.name}</span>
+                    <span>${f.count} records</span>
                 </div>
             `).join('');
-            
-            const badge = document.getElementById(totalBadgeId);
-            badge.innerHTML = `<i class="fas fa-chart-line"></i> Total: ${filesData.length} file | ${totalRecords} records`;
-            badge.style.display = 'block';
         }
 
-        window.removeSingleFile = function(type, index) {
-            if(type === 'manual') {
-                manualFilesData.splice(index, 1);
-                combinedManualData = [];
-                manualFilesData.forEach(f => {
-                    // Need to re-read? Actually we stored data, but we need to rebuild combined
-                });
-                // Rebuild combined data from remaining files
-                rebuildCombinedData();
-            } else if(type === 'qrpay') {
-                qrpayFilesData.splice(index, 1);
-                rebuildCombinedData();
-            } else if(type === 'withdraw') {
-                withdrawFilesData.splice(index, 1);
-                rebuildCombinedData();
+        function updateStatsAndButtons() {
+            if (manualRecords.length > 0 && qrpayRecords.length > 0 && withdrawRecords.length > 0) {
+                document.getElementById('filterBtn').disabled = false;
+                document.getElementById('filterPanel').style.display = 'block';
+                document.getElementById('stats').style.display = 'grid';
+                showAlert('✅ Semua file terupload! Klik Filter Data', 'success');
             }
-            updateFileList(type);
-            updateStats();
-            
-            if(combinedManualData.length === 0 || combinedQRData.length === 0 || combinedWithdrawData.length === 0) {
-                document.getElementById('filterBtn').disabled = true;
-            }
-        };
-
-        function rebuildCombinedData() {
-            // This is simplified - in production we'd store the actual data arrays
-            // For now we need to re-fetch, but for demo we'll use the existing combined arrays
-            // Actually we need to store the data per file
-            showAlert('File dihapus, upload ulang untuk data lengkap', 'info');
-        }
-
-        function updateStats() {
-            const manualRecords = manualFilesData.reduce((s,f)=>s+f.records,0);
-            const qrRecords = qrpayFilesData.reduce((s,f)=>s+f.records,0);
-            const wdRecords = withdrawFilesData.reduce((s,f)=>s+f.records,0);
-            
-            document.getElementById('statManualTotal').textContent = manualFilesData.length;
-            document.getElementById('statQRTotal').textContent = qrpayFilesData.length;
-            document.getElementById('statWDTotal').textContent = withdrawFilesData.length;
-            document.getElementById('statManualRecords').textContent = manualRecords;
-            document.getElementById('statQRRecords').textContent = qrRecords;
-            document.getElementById('statWDRecords').textContent = wdRecords;
         }
 
         function isBonusTransaction(record) {
@@ -975,9 +574,9 @@
             return activeKeywords.some(kw => toBank.includes(kw.toUpperCase()));
         }
 
-        window.applyFilters = function() {
-            if(combinedManualData.length === 0 || combinedQRData.length === 0 || combinedWithdrawData.length === 0) {
-                showAlert('Harap upload semua file (Manual, QRPay, Withdraw)', 'error');
+        window.filterData = function() {
+            if (manualRecords.length === 0 || qrpayRecords.length === 0 || withdrawRecords.length === 0) {
+                showAlert('Upload semua file terlebih dahulu!', 'error');
                 return;
             }
             
@@ -990,76 +589,77 @@
                     const startDate = document.getElementById('startDate').value;
                     const endDate = document.getElementById('endDate').value;
                     
-                    // Bonus Set
+                    // Create bonus set from manual data
                     const bonusSet = new Set();
-                    combinedManualData.forEach(rec => {
-                        if(isBonusTransaction(rec)) {
+                    manualRecords.forEach(rec => {
+                        if (isBonusTransaction(rec)) {
                             const user = String(rec['User Name'] || '').trim().toLowerCase();
                             const date = extractDate(rec['Date/Time']);
-                            if(user && date) bonusSet.add(`${user}|${date}`);
+                            if (user && date) bonusSet.add(`${user}|${date}`);
                         }
                     });
-                    document.getElementById('statBonusCount').textContent = bonusSet.size;
                     
-                    // Withdraw Set
+                    // Create withdraw set
                     const withdrawSet = new Set();
-                    combinedWithdrawData.forEach(wd => {
+                    withdrawRecords.forEach(wd => {
                         const user = String(wd['User Name'] || '').trim().toLowerCase();
                         const date = extractDate(wd['Date/Time'] || '');
-                        if(user && date) withdrawSet.add(`${user}|${date}`);
+                        if (user && date) withdrawSet.add(`${user}|${date}`);
                     });
-                    document.getElementById('statWDCount').textContent = withdrawSet.size;
                     
-                    // Filter QRPay
-                    const filtered = combinedQRData.filter(rec => {
+                    // Filter QRPay records
+                    const eligible = qrpayRecords.filter(rec => {
                         const user = String(rec['User Name'] || '').trim().toLowerCase();
                         const date = extractDate(rec['Date/Time']);
-                        if(!user || !date) return false;
+                        if (!user || !date) return false;
+                        
                         const key = `${user}|${date}`;
-                        if(bonusSet.has(key)) return false;
-                        if(withdrawSet.has(key)) return false;
+                        if (bonusSet.has(key)) return false;
+                        if (withdrawSet.has(key)) return false;
+                        
                         const deposit = parseNumber(rec['Deposit']);
-                        if(deposit < minNom || deposit > maxNom) return false;
-                        if(startDate && date < startDate) return false;
-                        if(endDate && date > endDate) return false;
+                        if (deposit < minNom || deposit > maxNom) return false;
+                        
+                        if (startDate && date < startDate) return false;
+                        if (endDate && date > endDate) return false;
+                        
                         return true;
                     }).map(rec => ({
                         'User Name': rec['User Name'],
                         'Deposit': rec['Deposit'],
                         'Date/Time': rec['Date/Time'],
                         'Reference': rec['Reference'] || '-',
-                        'RRN': rec['RRN'] || '-',
-                        'Status': 'Eligible'
+                        'RRN': rec['RRN'] || '-'
                     }));
                     
-                    filteredResult = filtered;
-                    document.getElementById('statResultCount').textContent = filtered.length;
-                    document.getElementById('resultBadge').innerHTML = `<i class="fas fa-users"></i> ${filtered.length} Eligible Users`;
+                    filteredData = eligible;
+                    document.getElementById('statResult').textContent = eligible.length;
+                    document.getElementById('resultBody').innerHTML = '';
                     
-                    const tbody = document.getElementById('resultBody');
-                    tbody.innerHTML = '';
-                    if(filtered.length === 0) {
-                        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center">Tidak ada user yang memenuhi kriteria</td></tr>';
+                    if (eligible.length === 0) {
+                        document.getElementById('resultBody').innerHTML = '<tr><td colspan="6" style="text-align:center">Tidak ada user yang memenuhi kriteria</td></tr>';
                     } else {
-                        filtered.forEach(row => {
-                            let depositStr = `Rp ${parseNumber(row['Deposit']).toLocaleString('id-ID')}`;
+                        eligible.forEach(row => {
+                            let depositDisplay = parseNumber(row['Deposit']);
+                            let depositStr = `Rp ${depositDisplay.toLocaleString('id-ID')}`;
                             const tr = document.createElement('tr');
                             tr.innerHTML = `
-                                <td style="font-weight:600">${escapeHtml(row['User Name'])}</td>
+                                <td><strong>${escapeHtml(row['User Name'])}</strong></td>
                                 <td>${depositStr}</td>
                                 <td>${escapeHtml(row['Date/Time'])}</td>
                                 <td><code>${escapeHtml(row['Reference'])}</code></td>
                                 <td><code>${escapeHtml(row['RRN'])}</code></td>
-                                <td><span class="status-eligible"><i class="fas fa-check-circle"></i> Eligible</span></td>
+                                <td><span class="status-badge">✅ Eligible</span></td>
                             `;
-                            tbody.appendChild(tr);
+                            document.getElementById('resultBody').appendChild(tr);
                         });
                     }
                     
-                    document.getElementById('resultSection').style.display = 'block';
+                    document.getElementById('results').style.display = 'block';
                     document.getElementById('downloadBtn').disabled = false;
-                    showAlert(`✨ Ditemukan ${filtered.length} user yang BELUM dapat bonus & BELUM withdraw`, 'success');
-                } catch(err) {
+                    showAlert(`✨ Ditemukan ${eligible.length} user yang BELUM dapat bonus & BELUM withdraw`, 'success');
+                    
+                } catch (err) {
                     showAlert(`Error: ${err.message}`, 'error');
                 } finally {
                     document.getElementById('loading').style.display = 'none';
@@ -1067,22 +667,24 @@
             }, 100);
         };
 
-        function escapeHtml(t) { if(!t) return '-'; const d=document.createElement('div'); d.textContent=t; return d.innerHTML; }
+        function escapeHtml(text) {
+            if (!text) return '-';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
 
         window.downloadExcel = function() {
-            if(!filteredResult || filteredResult.length===0) { showAlert('Tidak ada data', 'error'); return; }
-            const ws = XLSX.utils.json_to_sheet(filteredResult.map(r=>({
-                'User Name': r['User Name'],
-                'Deposit': r['Deposit'],
-                'Date/Time': r['Date/Time'],
-                'Reference': r['Reference'],
-                'RRN': r['RRN'],
-                'Status': r['Status']
-            })));
+            if (!filteredData.length) {
+                showAlert('Tidak ada data untuk didownload', 'error');
+                return;
+            }
+            
+            const ws = XLSX.utils.json_to_sheet(filteredData);
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, 'Eligible Users');
             XLSX.writeFile(wb, `eligible_users_${new Date().toISOString().split('T')[0]}.xlsx`);
-            showAlert(`✓ Download ${filteredResult.length} data`, 'success');
+            showAlert(`✓ Download ${filteredData.length} data berhasil`, 'success');
         };
 
         window.resetFilters = function() {
@@ -1090,109 +692,105 @@
             document.getElementById('maxNominal').value = '999999999';
             document.getElementById('startDate').value = '';
             document.getElementById('endDate').value = '';
-            showAlert('Filter direset', 'info');
-            if(combinedManualData.length && combinedQRData.length && combinedWithdrawData.length) applyFilters();
+            showAlert('Filter nominal dan tanggal direset', 'info');
+            if (manualRecords.length && qrpayRecords.length && withdrawRecords.length) filterData();
         };
 
-        window.resetAll = function() {
-            manualFilesData = [];
-            qrpayFilesData = [];
-            withdrawFilesData = [];
-            combinedManualData = [];
-            combinedQRData = [];
-            combinedWithdrawData = [];
-            filteredResult = null;
+        window.clearAll = function() {
+            manualRecords = [];
+            qrpayRecords = [];
+            withdrawRecords = [];
+            filteredData = [];
             activeKeywords = ['BONUS DEPOSIT HARIAN', 'SCB A BONUS DEPOSIT HARIAN'];
             
-            document.getElementById('manualFileList').innerHTML = '';
-            document.getElementById('qrpayFileList').innerHTML = '';
-            document.getElementById('withdrawFileList').innerHTML = '';
-            document.getElementById('manualTotalBadge').style.display = 'none';
-            document.getElementById('qrpayTotalBadge').style.display = 'none';
-            document.getElementById('withdrawTotalBadge').style.display = 'none';
-            document.getElementById('manualFileInput').value = '';
-            document.getElementById('qrpayFileInput').value = '';
-            document.getElementById('withdrawFileInput').value = '';
-            document.getElementById('resultSection').style.display = 'none';
+            document.getElementById('manualFiles').innerHTML = '';
+            document.getElementById('qrpayFiles').innerHTML = '';
+            document.getElementById('withdrawFiles').innerHTML = '';
+            document.getElementById('manualBadge').style.display = 'none';
+            document.getElementById('qrpayBadge').style.display = 'none';
+            document.getElementById('withdrawBadge').style.display = 'none';
+            document.getElementById('manualInput').value = '';
+            document.getElementById('qrpayInput').value = '';
+            document.getElementById('withdrawInput').value = '';
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('filterPanel').style.display = 'none';
+            document.getElementById('stats').style.display = 'none';
             document.getElementById('filterBtn').disabled = true;
             document.getElementById('downloadBtn').disabled = true;
-            document.getElementById('filterPanel').style.display = 'none';
-            document.getElementById('statsDashboard').style.display = 'none';
-            document.getElementById('minNominal').value = '0';
-            document.getElementById('maxNominal').value = '999999999';
-            document.getElementById('startDate').value = '';
-            document.getElementById('endDate').value = '';
+            document.getElementById('statManualRec').textContent = '0';
+            document.getElementById('statQRRec').textContent = '0';
+            document.getElementById('statWDRec').textContent = '0';
+            document.getElementById('statResult').textContent = '0';
             
-            document.querySelectorAll('.keyword-tag-premium').forEach(tag => {
-                if(tag.dataset.keyword === 'BONUS DEPOSIT HARIAN' || tag.dataset.keyword === 'SCB A BONUS') {
+            document.querySelectorAll('.keyword-tag').forEach(tag => {
+                if (tag.dataset.keyword === 'BONUS DEPOSIT HARIAN' || tag.dataset.keyword === 'SCB A BONUS') {
                     tag.classList.add('active');
                 } else {
                     tag.classList.remove('active');
                 }
             });
-            updateActiveKeywords();
-            showAlert('Semua data direset', 'info');
+            updateKeywordsDisplay();
+            showAlert('Semua data dihapus', 'info');
         };
 
-        function updateActiveKeywords() {
-            document.getElementById('activeKeywords').innerHTML = `<i class="fas fa-check-circle"></i> <strong>Active Keywords:</strong> ${activeKeywords.join(', ')}`;
-        }
-
-        window.addCustomKeyword = function() {
-            const inp = document.getElementById('customKeyword');
-            const kw = inp.value.trim().toUpperCase();
-            if(kw && !activeKeywords.includes(kw)) {
+        window.addKeyword = function() {
+            const input = document.getElementById('customKeyword');
+            const kw = input.value.trim().toUpperCase();
+            if (kw && !activeKeywords.includes(kw)) {
                 activeKeywords.push(kw);
-                updateActiveKeywords();
-                inp.value = '';
+                updateKeywordsDisplay();
+                input.value = '';
                 showAlert(`✓ Kata kunci "${kw}" ditambahkan`, 'success');
             }
         };
 
-        document.querySelectorAll('.keyword-tag-premium').forEach(tag => {
+        function updateKeywordsDisplay() {
+            document.getElementById('activeKeywordsDisplay').innerHTML = `Active: ${activeKeywords.join(', ')}`;
+        }
+
+        // Setup keyword tags
+        document.querySelectorAll('.keyword-tag').forEach(tag => {
             tag.addEventListener('click', function() {
                 const kw = this.dataset.keyword;
-                if(this.classList.contains('active')) {
+                if (this.classList.contains('active')) {
                     this.classList.remove('active');
                     const idx = activeKeywords.indexOf(kw);
-                    if(idx > -1) activeKeywords.splice(idx, 1);
+                    if (idx > -1) activeKeywords.splice(idx, 1);
                 } else {
                     this.classList.add('active');
-                    if(!activeKeywords.includes(kw)) activeKeywords.push(kw);
+                    if (!activeKeywords.includes(kw)) activeKeywords.push(kw);
                 }
-                updateActiveKeywords();
+                updateKeywordsDisplay();
             });
         });
 
-        // File input handlers with multiple files
-        document.getElementById('manualFileInput').addEventListener('change', (e) => {
-            if(e.target.files.length) handleMultipleFiles(Array.from(e.target.files), 'manual');
+        // File input handlers
+        document.getElementById('manualInput').addEventListener('change', (e) => {
+            if (e.target.files.length) handleFiles(Array.from(e.target.files), 'manual');
         });
-        document.getElementById('qrpayFileInput').addEventListener('change', (e) => {
-            if(e.target.files.length) handleMultipleFiles(Array.from(e.target.files), 'qrpay');
+        document.getElementById('qrpayInput').addEventListener('change', (e) => {
+            if (e.target.files.length) handleFiles(Array.from(e.target.files), 'qrpay');
         });
-        document.getElementById('withdrawFileInput').addEventListener('change', (e) => {
-            if(e.target.files.length) handleMultipleFiles(Array.from(e.target.files), 'withdraw');
+        document.getElementById('withdrawInput').addEventListener('change', (e) => {
+            if (e.target.files.length) handleFiles(Array.from(e.target.files), 'withdraw');
         });
 
-        // Drag & drop with multiple files
+        // Drag & drop
         function setupDragDrop(areaId, inputId, type) {
             const area = document.getElementById(areaId);
             const input = document.getElementById(inputId);
-            area.addEventListener('dragover', e => { e.preventDefault(); area.style.borderColor = '#3b82f6'; area.style.background = 'rgba(59,130,246,0.1)'; });
-            area.addEventListener('dragleave', () => { area.style.borderColor = 'rgba(59,130,246,0.4)'; area.style.background = 'rgba(30,41,59,0.4)'; });
-            area.addEventListener('drop', e => {
+            area.addEventListener('dragover', (e) => { e.preventDefault(); area.style.borderColor = '#667eea'; });
+            area.addEventListener('dragleave', () => { area.style.borderColor = '#ccc'; });
+            area.addEventListener('drop', (e) => {
                 e.preventDefault();
-                area.style.borderColor = 'rgba(59,130,246,0.4)';
-                area.style.background = 'rgba(30,41,59,0.4)';
+                area.style.borderColor = '#ccc';
                 const files = Array.from(e.dataTransfer.files);
-                if(files.length) handleMultipleFiles(files, type);
+                if (files.length) handleFiles(files, type);
             });
-            area.addEventListener('click', () => input.click());
         }
-        setupDragDrop('manualUploadArea', 'manualFileInput', 'manual');
-        setupDragDrop('qrpayUploadArea', 'qrpayFileInput', 'qrpay');
-        setupDragDrop('withdrawUploadArea', 'withdrawFileInput', 'withdraw');
+        setupDragDrop('manualArea', 'manualInput', 'manual');
+        setupDragDrop('qrpayArea', 'qrpayInput', 'qrpay');
+        setupDragDrop('withdrawArea', 'withdrawInput', 'withdraw');
     </script>
 </body>
 </html>
