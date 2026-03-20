@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>SCB Deposit Filter Pro - Bonus Harian Filter System</title>
+    <title>SCB Deposit Filter Pro - Bonus Harian & Withdraw Checker</title>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -15,30 +15,23 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
             min-height: 100vh;
             color: #1e293b;
         }
 
-        /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
         }
-
         ::-webkit-scrollbar-track {
             background: #f1f5f9;
             border-radius: 10px;
         }
-
         ::-webkit-scrollbar-thumb {
             background: #3b82f6;
             border-radius: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #2563eb;
         }
 
         .container {
@@ -47,35 +40,25 @@
             padding: 20px;
         }
 
-        /* Header */
         .header {
             text-align: center;
             margin-bottom: 40px;
-            position: relative;
         }
-
         .header h1 {
-            font-size: 3rem;
+            font-size: 2.5rem;
             font-weight: 800;
             background: linear-gradient(135deg, #60a5fa, #a78bfa, #f472b6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             margin-bottom: 12px;
-            letter-spacing: -0.5px;
         }
-
         .header p {
             color: #94a3b8;
-            font-size: 1.1rem;
-            max-width: 600px;
-            margin: 0 auto;
         }
-
         .badge {
             display: inline-block;
             background: rgba(59,130,246,0.2);
-            backdrop-filter: blur(10px);
             padding: 5px 12px;
             border-radius: 50px;
             font-size: 0.75rem;
@@ -83,27 +66,24 @@
             margin-bottom: 16px;
         }
 
-        /* Upload Cards */
-        .upload-section {
+        /* Upload Cards Grid */
+        .upload-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
             gap: 24px;
             margin-bottom: 32px;
         }
 
         .upload-card {
             background: rgba(255,255,255,0.98);
-            backdrop-filter: blur(10px);
-            border-radius: 28px;
-            padding: 28px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.05);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
             border: 1px solid rgba(255,255,255,0.2);
         }
-
         .upload-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
         }
 
         .card-header {
@@ -111,78 +91,56 @@
             align-items: center;
             gap: 12px;
             margin-bottom: 20px;
-            padding-bottom: 16px;
+            padding-bottom: 12px;
             border-bottom: 2px solid #e2e8f0;
         }
-
         .card-icon {
             width: 48px;
             height: 48px;
             background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-            border-radius: 18px;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 24px;
             color: white;
         }
-
         .card-header h2 {
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             font-weight: 700;
             color: #0f172a;
         }
-
         .card-header p {
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             color: #64748b;
-            margin-top: 4px;
         }
 
         .upload-area {
             border: 2px dashed #cbd5e1;
             border-radius: 20px;
-            padding: 40px 20px;
+            padding: 35px 20px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s;
             background: #f8fafc;
         }
-
         .upload-area:hover {
             border-color: #3b82f6;
             background: #eff6ff;
-            transform: scale(0.98);
         }
-
-        .upload-area.drag-over {
-            border-color: #3b82f6;
-            background: #dbeafe;
-            transform: scale(0.98);
-        }
-
         .upload-icon {
-            font-size: 56px;
+            font-size: 48px;
             margin-bottom: 12px;
         }
-
         .file-info {
-            margin-top: 16px;
-            padding: 14px;
-            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
-            border-radius: 16px;
+            margin-top: 12px;
+            padding: 12px;
+            background: #f0fdf4;
+            border-radius: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border: 1px solid #bbf7d0;
         }
-
-        .file-info span {
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: #166534;
-        }
-
         .remove-file {
             background: #fee2e2;
             color: #dc2626;
@@ -191,94 +149,53 @@
             border-radius: 40px;
             cursor: pointer;
             font-size: 0.75rem;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-
-        .remove-file:hover {
-            background: #fecaca;
-            transform: scale(1.05);
         }
 
         /* Filter Panel */
         .filter-panel {
             background: rgba(255,255,255,0.98);
-            backdrop-filter: blur(10px);
-            border-radius: 28px;
-            padding: 28px;
+            border-radius: 24px;
+            padding: 24px;
             margin-bottom: 32px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
         }
-
         .filter-title {
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 24px;
-            padding-bottom: 16px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
             border-bottom: 2px solid #e2e8f0;
         }
-
-        .filter-title i {
-            font-size: 28px;
-            color: #3b82f6;
-        }
-
-        .filter-title h3 {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: #0f172a;
-        }
-
         .filter-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
-            margin-bottom: 24px;
+            gap: 20px;
+            margin-bottom: 20px;
         }
-
         .filter-group {
             display: flex;
             flex-direction: column;
             gap: 8px;
         }
-
         .filter-group label {
             font-weight: 600;
             color: #475569;
             font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-            gap: 6px;
         }
-
-        .filter-group label i {
-            font-size: 14px;
-            color: #3b82f6;
-        }
-
-        .filter-group input, .filter-group select {
-            padding: 12px 14px;
+        .filter-group input {
+            padding: 12px;
             border: 1.5px solid #e2e8f0;
-            border-radius: 14px;
+            border-radius: 12px;
             font-size: 0.9rem;
-            font-family: inherit;
-            transition: all 0.3s;
-            background: white;
         }
-
-        .filter-group input:focus, .filter-group select:focus {
+        .filter-group input:focus {
             outline: none;
             border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
         }
-
         .nominal-group {
             display: flex;
             gap: 12px;
         }
-
         .nominal-group input {
             flex: 1;
         }
@@ -286,65 +203,40 @@
         /* Bonus Keywords */
         .bonus-keywords {
             background: #f8fafc;
-            border-radius: 20px;
-            padding: 20px;
+            border-radius: 16px;
+            padding: 16px;
             margin-top: 16px;
-            border: 1px solid #e2e8f0;
         }
-
-        .bonus-keywords h4 {
-            font-size: 0.9rem;
-            margin-bottom: 12px;
-            color: #475569;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
         .keyword-tags {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
-            margin-bottom: 16px;
+            margin: 12px 0;
         }
-
         .keyword-tag {
             background: white;
             padding: 6px 16px;
             border-radius: 40px;
             font-size: 0.8rem;
-            font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s;
             border: 1.5px solid #e2e8f0;
-            color: #475569;
         }
-
-        .keyword-tag:hover {
-            border-color: #3b82f6;
-            background: #eff6ff;
-        }
-
         .keyword-tag.active {
             background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-            border-color: transparent;
             color: white;
+            border-color: transparent;
         }
-
         .custom-keyword {
             display: flex;
             gap: 10px;
             margin-top: 12px;
         }
-
         .custom-keyword input {
             flex: 1;
-            padding: 10px 14px;
+            padding: 10px;
             border: 1.5px solid #e2e8f0;
             border-radius: 40px;
-            font-size: 0.85rem;
         }
-
         .custom-keyword button {
             padding: 10px 20px;
             background: linear-gradient(135deg, #3b82f6, #8b5cf6);
@@ -352,64 +244,39 @@
             border: none;
             border-radius: 40px;
             cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
         }
-
-        .custom-keyword button:hover {
-            transform: scale(1.02);
-        }
-
         .active-keywords {
             margin-top: 12px;
-            padding: 10px;
+            padding: 8px;
             background: #eef2ff;
-            border-radius: 12px;
+            border-radius: 8px;
             font-size: 0.8rem;
-            color: #1e40af;
         }
 
-        /* Statistics */
+        /* Stats */
         .stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 20px;
             margin-bottom: 32px;
         }
-
         .stat-card {
             background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 24px;
+            border-radius: 20px;
             padding: 20px;
             text-align: center;
-            transition: all 0.3s;
-            border: 1px solid rgba(255,255,255,0.3);
         }
-
-        .stat-card:hover {
-            transform: translateY(-2px);
-        }
-
-        .stat-icon {
-            font-size: 32px;
-            margin-bottom: 8px;
-        }
-
         .stat-number {
-            font-size: 2.2rem;
+            font-size: 2rem;
             font-weight: 800;
             background: linear-gradient(135deg, #0f172a, #3b82f6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
-
         .stat-label {
             color: #64748b;
             font-size: 0.8rem;
             margin-top: 4px;
-            font-weight: 500;
         }
 
         /* Buttons */
@@ -420,537 +287,350 @@
             margin-bottom: 32px;
             flex-wrap: wrap;
         }
-
         .btn {
-            padding: 14px 32px;
-            font-size: 0.95rem;
+            padding: 12px 28px;
+            font-size: 0.9rem;
             font-weight: 600;
             border: none;
             border-radius: 60px;
             cursor: pointer;
-            transition: all 0.3s;
             display: inline-flex;
             align-items: center;
-            gap: 10px;
-            font-family: inherit;
+            gap: 8px;
+            transition: all 0.3s;
         }
-
         .btn-primary {
             background: linear-gradient(135deg, #3b82f6, #8b5cf6);
             color: white;
-            box-shadow: 0 4px 15px rgba(59,130,246,0.3);
         }
-
-        .btn-primary:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(59,130,246,0.4);
-        }
-
         .btn-success {
             background: linear-gradient(135deg, #10b981, #059669);
             color: white;
         }
-
-        .btn-success:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(16,185,129,0.3);
-        }
-
         .btn-warning {
             background: linear-gradient(135deg, #f59e0b, #d97706);
             color: white;
         }
-
-        .btn-warning:hover {
-            transform: translateY(-2px);
-        }
-
         .btn-danger {
             background: linear-gradient(135deg, #ef4444, #dc2626);
             color: white;
         }
-
-        .btn-danger:hover {
-            transform: translateY(-2px);
-        }
-
         .btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
-            transform: none;
         }
 
         /* Results */
         .result-section {
             background: rgba(255,255,255,0.98);
-            backdrop-filter: blur(10px);
-            border-radius: 28px;
-            padding: 28px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            border-radius: 24px;
+            padding: 24px;
             overflow-x: auto;
         }
-
         .result-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             flex-wrap: wrap;
-            gap: 16px;
         }
-
-        .result-header h3 {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #0f172a;
-        }
-
-        .result-badge {
-            background: #dbeafe;
-            padding: 6px 14px;
-            border-radius: 40px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: #1e40af;
-        }
-
         table {
             width: 100%;
             border-collapse: collapse;
         }
-
         th {
             background: #f8fafc;
-            padding: 14px 12px;
+            padding: 12px;
             text-align: left;
+            font-size: 0.75rem;
             font-weight: 600;
             color: #475569;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
             border-bottom: 2px solid #e2e8f0;
         }
-
         td {
-            padding: 14px 12px;
+            padding: 12px;
             border-bottom: 1px solid #e2e8f0;
-            color: #334155;
             font-size: 0.85rem;
         }
-
         tr:hover {
             background: #f8fafc;
         }
-
-        .empty-state {
-            text-align: center;
-            padding: 60px;
-            color: #94a3b8;
-        }
-
-        /* Alert */
         .alert {
-            padding: 14px 20px;
-            border-radius: 16px;
+            padding: 12px 16px;
+            border-radius: 12px;
             margin-bottom: 20px;
             display: flex;
             align-items: center;
-            gap: 12px;
-            animation: slideIn 0.3s ease;
+            gap: 10px;
         }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(-20px);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
         .alert-success {
             background: #d1fae5;
             color: #065f46;
-            border-left: 4px solid #10b981;
         }
-
         .alert-error {
             background: #fee2e2;
             color: #991b1b;
-            border-left: 4px solid #ef4444;
         }
-
         .alert-info {
             background: #e0f2fe;
             color: #075985;
-            border-left: 4px solid #0ea5e9;
         }
-
-        /* Loading */
         .loading {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(5px);
+            background: rgba(0,0,0,0.7);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 1000;
         }
-
-        .loading-content {
-            text-align: center;
-        }
-
         .spinner {
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             border: 4px solid rgba(255,255,255,0.2);
             border-top: 4px solid #3b82f6;
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin-bottom: 20px;
         }
-
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-
-        .loading p {
-            color: white;
-            font-size: 0.9rem;
-        }
-
-        /* Info Panel */
         .info-panel {
             margin-top: 32px;
-            background: linear-gradient(135deg, #fef9e3, #fef3c7);
-            border-radius: 24px;
-            padding: 24px;
+            background: #fef9e3;
+            border-radius: 20px;
+            padding: 20px;
             border-left: 4px solid #f59e0b;
         }
-
-        .info-panel h4 {
-            color: #92400e;
-            margin-bottom: 16px;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .info-panel ul {
-            list-style: none;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 12px;
-        }
-
-        .info-panel li {
-            padding: 6px 0;
-            color: #b45309;
-            font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
         footer {
             text-align: center;
-            margin-top: 40px;
-            padding: 24px;
+            margin-top: 32px;
+            padding: 20px;
             color: #64748b;
-            font-size: 0.8rem;
-            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.75rem;
         }
-
         @media (max-width: 768px) {
-            .container {
-                padding: 16px;
-            }
-            .upload-section {
+            .upload-grid {
                 grid-template-columns: 1fr;
             }
             .header h1 {
-                font-size: 1.8rem;
-            }
-            .btn {
-                padding: 10px 20px;
-                font-size: 0.85rem;
-            }
-            .filter-grid {
-                grid-template-columns: 1fr;
-            }
-            .nominal-group {
-                flex-direction: column;
+                font-size: 1.5rem;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
         <div class="header">
-            <div class="badge">
-                <i class="fas fa-star"></i> Professional Filter System
-            </div>
-            <h1>
-                <i class="fas fa-filter"></i> SCB Deposit Filter
-            </h1>
-            <p>Filter data deposit untuk menampilkan user yang belum mendapatkan bonus deposit harian</p>
+            <div class="badge"><i class="fas fa-star"></i> Complete Filter System</div>
+            <h1><i class="fas fa-filter"></i> SCB Deposit Filter Pro</h1>
+            <p>Filter user yang BELUM dapat bonus DAN BELUM melakukan withdraw</p>
         </div>
 
         <div id="alertContainer"></div>
 
-        <!-- Upload Section -->
-        <div class="upload-section">
+        <!-- 3 Upload Cards -->
+        <div class="upload-grid">
+            <!-- Manual Deposit -->
             <div class="upload-card">
                 <div class="card-header">
-                    <div class="card-icon">
-                        <i class="fas fa-file-excel"></i>
-                    </div>
+                    <div class="card-icon"><i class="fas fa-file-excel"></i></div>
                     <div>
-                        <h2>Deposit History (Manual)</h2>
-                        <p>Upload file Excel dengan data deposit manual</p>
+                        <h2>1. Deposit History (Manual)</h2>
+                        <p>Data deposit manual dengan kolom To Bank</p>
                     </div>
                 </div>
                 <div id="manualUploadArea" class="upload-area">
-                    <div class="upload-icon">
-                        <i class="fas fa-cloud-upload-alt"></i>
-                    </div>
-                    <p style="font-weight: 500;">Klik atau drag & drop file di sini</p>
-                    <p style="font-size: 0.7rem; color: #94a3b8; margin-top: 8px;">Support: .xlsx, .xls, .csv</p>
-                    <input type="file" id="manualFile" accept=".xlsx,.xls,.csv" style="display: none;">
+                    <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                    <p>Klik atau drag & drop file Manual</p>
+                    <input type="file" id="manualFile" accept=".xlsx,.xls,.csv" style="display:none">
                 </div>
-                <div id="manualFileInfo" style="display: none;" class="file-info">
-                    <span><i class="fas fa-check-circle"></i> <span id="manualFileName"></span> (<span id="manualRowCount"></span> records)</span>
-                    <button class="remove-file" onclick="removeFile('manual')"><i class="fas fa-trash-alt"></i> Hapus</button>
+                <div id="manualFileInfo" style="display:none" class="file-info">
+                    <span><i class="fas fa-check-circle"></i> <span id="manualFileName"></span> (<span id="manualRowCount"></span>)</span>
+                    <button class="remove-file" onclick="removeFile('manual')">Hapus</button>
                 </div>
             </div>
 
+            <!-- QRPay Deposit -->
             <div class="upload-card">
                 <div class="card-header">
-                    <div class="card-icon">
-                        <i class="fas fa-qrcode"></i>
-                    </div>
+                    <div class="card-icon"><i class="fas fa-qrcode"></i></div>
                     <div>
-                        <h2>Deposit History (QRPay)</h2>
-                        <p>Upload file Excel dengan data deposit QRPay</p>
+                        <h2>2. Deposit History (QRPay)</h2>
+                        <p>Data deposit dari QRPay</p>
                     </div>
                 </div>
                 <div id="qrpayUploadArea" class="upload-area">
-                    <div class="upload-icon">
-                        <i class="fas fa-cloud-upload-alt"></i>
-                    </div>
-                    <p style="font-weight: 500;">Klik atau drag & drop file di sini</p>
-                    <p style="font-size: 0.7rem; color: #94a3b8; margin-top: 8px;">Support: .xlsx, .xls, .csv</p>
-                    <input type="file" id="qrpayFile" accept=".xlsx,.xls,.csv" style="display: none;">
+                    <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                    <p>Klik atau drag & drop file QRPay</p>
+                    <input type="file" id="qrpayFile" accept=".xlsx,.xls,.csv" style="display:none">
                 </div>
-                <div id="qrpayFileInfo" style="display: none;" class="file-info">
-                    <span><i class="fas fa-check-circle"></i> <span id="qrpayFileName"></span> (<span id="qrpayRowCount"></span> records)</span>
-                    <button class="remove-file" onclick="removeFile('qrpay')"><i class="fas fa-trash-alt"></i> Hapus</button>
+                <div id="qrpayFileInfo" style="display:none" class="file-info">
+                    <span><i class="fas fa-check-circle"></i> <span id="qrpayFileName"></span> (<span id="qrpayRowCount"></span>)</span>
+                    <button class="remove-file" onclick="removeFile('qrpay')">Hapus</button>
+                </div>
+            </div>
+
+            <!-- Withdraw History -->
+            <div class="upload-card">
+                <div class="card-header">
+                    <div class="card-icon"><i class="fas fa-money-bill-wave"></i></div>
+                    <div>
+                        <h2>3. Withdraw History</h2>
+                        <p>Data withdraw (user yang sudah WD akan difilter)</p>
+                    </div>
+                </div>
+                <div id="withdrawUploadArea" class="upload-area">
+                    <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                    <p>Klik atau drag & drop file Withdraw</p>
+                    <input type="file" id="withdrawFile" accept=".xlsx,.xls,.csv" style="display:none">
+                </div>
+                <div id="withdrawFileInfo" style="display:none" class="file-info">
+                    <span><i class="fas fa-check-circle"></i> <span id="withdrawFileName"></span> (<span id="withdrawRowCount"></span>)</span>
+                    <button class="remove-file" onclick="removeFile('withdraw')">Hapus</button>
                 </div>
             </div>
         </div>
 
         <!-- Filter Panel -->
-        <div class="filter-panel" id="filterPanel" style="display: none;">
+        <div class="filter-panel" id="filterPanel" style="display:none">
             <div class="filter-title">
                 <i class="fas fa-sliders-h"></i>
                 <h3>Pengaturan Filter</h3>
             </div>
-            
             <div class="filter-grid">
                 <div class="filter-group">
-                    <label><i class="fas fa-money-bill-wave"></i> Nominal Deposit (Min - Max)</label>
+                    <label><i class="fas fa-money-bill-wave"></i> Filter Nominal Deposit (Min - Max)</label>
                     <div class="nominal-group">
                         <input type="number" id="minNominal" placeholder="Minimal" value="0">
                         <input type="number" id="maxNominal" placeholder="Maksimal" value="999999999">
                     </div>
                 </div>
-                
                 <div class="filter-group">
-                    <label><i class="fas fa-calendar-alt"></i> Rentang Tanggal</label>
-                    <div style="display: flex; gap: 10px;">
-                        <input type="date" id="startDate" placeholder="Tanggal Mulai" style="flex:1">
-                        <input type="date" id="endDate" placeholder="Tanggal Akhir" style="flex:1">
+                    <label><i class="fas fa-calendar"></i> Filter Tanggal Deposit</label>
+                    <div style="display:flex; gap:10px">
+                        <input type="date" id="startDate" placeholder="Dari" style="flex:1">
+                        <input type="date" id="endDate" placeholder="Sampai" style="flex:1">
                     </div>
                 </div>
             </div>
-            
+
             <div class="bonus-keywords">
-                <h4><i class="fas fa-tag"></i> Kata Kunci Bonus (Data manual dengan "To Bank" mengandung kata kunci ini dianggap sudah dapat bonus)</h4>
+                <h4><i class="fas fa-tag"></i> Kata Kunci Bonus (To Bank mengandung kata kunci ini = sudah dapat bonus)</h4>
                 <div class="keyword-tags" id="keywordTags">
                     <span class="keyword-tag active" data-keyword="BONUS DEPOSIT HARIAN">🏷️ BONUS DEPOSIT HARIAN</span>
+                    <span class="keyword-tag" data-keyword="SCB A BONUS">🏷️ SCB A BONUS DEPOSIT HARIAN</span>
                     <span class="keyword-tag" data-keyword="BONUS">🎁 BONUS</span>
-                    <span class="keyword-tag" data-keyword="DEPOSIT BONUS">💰 DEPOSIT BONUS</span>
-                    <span class="keyword-tag" data-keyword="HARIAN">📅 HARIAN</span>
                 </div>
                 <div class="custom-keyword">
                     <input type="text" id="customKeyword" placeholder="Tambah kata kunci sendiri...">
                     <button onclick="addCustomKeyword()"><i class="fas fa-plus"></i> Tambah</button>
                 </div>
                 <div class="active-keywords" id="activeKeywords">
-                    <i class="fas fa-check-circle"></i> <strong>Active:</strong> BONUS DEPOSIT HARIAN
+                    <i class="fas fa-info-circle"></i> <strong>Active:</strong> BONUS DEPOSIT HARIAN
                 </div>
             </div>
         </div>
 
         <!-- Statistics -->
-        <div class="stats" id="stats" style="display: none;">
-            <div class="stat-card">
-                <div class="stat-icon"><i class="fas fa-database"></i></div>
-                <div class="stat-number" id="statManual">0</div>
-                <div class="stat-label">Total Data Manual</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon"><i class="fas fa-qrcode"></i></div>
-                <div class="stat-number" id="statQRPay">0</div>
-                <div class="stat-label">Total Data QRPay</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
-                <div class="stat-number" id="statFiltered">0</div>
-                <div class="stat-label">Setelah Filter Nominal</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon"><i class="fas fa-gift"></i></div>
-                <div class="stat-number" id="statResult">0</div>
-                <div class="stat-label">Belum Dapat Bonus</div>
-            </div>
+        <div class="stats" id="stats" style="display:none">
+            <div class="stat-card"><div class="stat-number" id="statManual">0</div><div class="stat-label">Data Manual</div></div>
+            <div class="stat-card"><div class="stat-number" id="statQRPay">0</div><div class="stat-label">Data QRPay</div></div>
+            <div class="stat-card"><div class="stat-number" id="statWithdraw">0</div><div class="stat-label">Data Withdraw</div></div>
+            <div class="stat-card"><div class="stat-number" id="statBonus">0</div><div class="stat-label">Sudah Dapat Bonus</div></div>
+            <div class="stat-card"><div class="stat-number" id="statWDed">0</div><div class="stat-label">Sudah Withdraw</div></div>
+            <div class="stat-card"><div class="stat-number" id="statResult">0</div><div class="stat-label">Belum Bonus & Belum WD</div></div>
         </div>
 
-        <!-- Button Group -->
+        <!-- Buttons -->
         <div class="button-group">
-            <button id="filterBtn" class="btn btn-primary" disabled onclick="applyFilters()">
-                <i class="fas fa-search"></i> Filter Data
-            </button>
-            <button id="downloadBtn" class="btn btn-success" disabled onclick="downloadExcel()">
-                <i class="fas fa-download"></i> Download Excel
-            </button>
-            <button class="btn btn-warning" onclick="resetFilters()">
-                <i class="fas fa-undo-alt"></i> Reset Filter
-            </button>
-            <button class="btn btn-danger" onclick="resetAll()">
-                <i class="fas fa-trash-alt"></i> Reset Semua
-            </button>
+            <button id="filterBtn" class="btn btn-primary" disabled onclick="applyFilters()"><i class="fas fa-search"></i> Filter Data</button>
+            <button id="downloadBtn" class="btn btn-success" disabled onclick="downloadExcel()"><i class="fas fa-download"></i> Download Excel</button>
+            <button class="btn btn-warning" onclick="resetFilters()"><i class="fas fa-undo"></i> Reset Filter</button>
+            <button class="btn btn-danger" onclick="resetAll()"><i class="fas fa-trash"></i> Reset Semua</button>
         </div>
 
         <!-- Results -->
-        <div id="resultSection" class="result-section" style="display: none;">
+        <div id="resultSection" class="result-section" style="display:none">
             <div class="result-header">
-                <h3><i class="fas fa-table"></i> Hasil Filter</h3>
+                <h3><i class="fas fa-users"></i> User yang BELUM Dapat Bonus & BELUM Withdraw</h3>
                 <div class="result-badge" id="resultBadge"></div>
             </div>
-            <div style="overflow-x: auto;">
+            <div style="overflow-x:auto">
                 <table id="resultTable">
                     <thead>
-                        <tr>
-                            <th><i class="fas fa-user"></i> User Name</th>
-                            <th><i class="fas fa-money-bill"></i> Deposit</th>
-                            <th><i class="fas fa-calendar"></i> Date/Time</th>
-                            <th><i class="fas fa-hashtag"></i> Reference</th>
-                            <th><i class="fas fa-qrcode"></i> RRN</th>
-                        </tr>
+                        <tr><th>User Name</th><th>Deposit</th><th>Date/Time</th><th>Reference</th><th>RRN</th><th>Status</th></tr>
                     </thead>
-                    <tbody id="resultBody">
-                        <tr class="empty-state">
-                            <td colspan="5">Belum ada data. Upload file dan klik Filter Data</td>
-                        </tr>
-                    </tbody>
+                    <tbody id="resultBody"></tbody>
                 </table>
             </div>
         </div>
 
-        <!-- Info Panel -->
         <div class="info-panel">
-            <h4><i class="fas fa-info-circle"></i> Panduan Penggunaan</h4>
-            <ul>
-                <li><i class="fas fa-upload"></i> <strong>Step 1:</strong> Upload file Manual Deposit dan QRPay Deposit</li>
-                <li><i class="fas fa-tag"></i> <strong>Step 2:</strong> Pilih kata kunci bonus (data manual dengan To Bank mengandung kata kunci = sudah dapat bonus)</li>
-                <li><i class="fas fa-chart-line"></i> <strong>Step 3:</strong> Atur filter nominal deposit (min - max)</li>
-                <li><i class="fas fa-calendar"></i> <strong>Step 4:</strong> Atur filter tanggal (opsional)</li>
-                <li><i class="fas fa-filter"></i> <strong>Step 5:</strong> Klik "Filter Data" untuk melihat hasil</li>
-                <li><i class="fas fa-download"></i> <strong>Step 6:</strong> Download hasil dalam format Excel</li>
+            <h4><i class="fas fa-info-circle"></i> Logika Filter</h4>
+            <ul style="display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:8px; list-style:none">
+                <li><i class="fas fa-check-circle text-green"></i> <strong>Step 1:</strong> Upload 3 file: Manual Deposit, QRPay Deposit, Withdraw History</li>
+                <li><i class="fas fa-tag"></i> <strong>Step 2:</strong> Pilih kata kunci bonus (To Bank mengandung kata kunci = sudah dapat bonus)</li>
+                <li><i class="fas fa-chart-line"></i> <strong>Step 3:</strong> Atur filter nominal & tanggal (opsional)</li>
+                <li><i class="fas fa-filter"></i> <strong>Step 4:</strong> Klik Filter Data</li>
+                <li><i class="fas fa-gift"></i> <strong>Hasil:</strong> User yang BELUM dapat bonus DAN BELUM melakukan withdraw</li>
             </ul>
         </div>
-
-        <footer>
-            <p><i class="fas fa-copyright"></i> 2024 SCB Deposit Filter Pro | Professional Filter System for Bonus Harian</p>
-        </footer>
+        <footer>SCB Deposit Filter Pro © 2024 | Filter berdasarkan Bonus & Withdraw</footer>
     </div>
 
-    <div id="loading" style="display: none;" class="loading">
-        <div class="loading-content">
-            <div class="spinner"></div>
-            <p>Memproses data...</p>
-        </div>
-    </div>
+    <div id="loading" style="display:none" class="loading"><div class="spinner"></div><p style="color:white; margin-top:16px">Memproses data...</p></div>
 
     <script>
-        // State Management
-        let manualData = null;
-        let qrpayData = null;
+        // State
+        let manualData = null, qrpayData = null, withdrawData = null;
         let filteredResult = null;
-        let activeKeywords = ['BONUS DEPOSIT HARIAN'];
+        let activeKeywords = ['BONUS DEPOSIT HARIAN', 'SCB A BONUS DEPOSIT HARIAN'];
 
-        // Helper Functions
-        function showAlert(message, type) {
-            const alertDiv = document.createElement('div');
-            alertDiv.className = `alert alert-${type}`;
-            alertDiv.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i><span>${message}</span>`;
-            document.getElementById('alertContainer').appendChild(alertDiv);
-            setTimeout(() => alertDiv.remove(), 5000);
+        function showAlert(msg, type) {
+            const div = document.createElement('div');
+            div.className = `alert alert-${type}`;
+            div.innerHTML = `<i class="fas ${type==='success'?'fa-check-circle':type==='error'?'fa-exclamation-circle':'fa-info-circle'}"></i> ${msg}`;
+            document.getElementById('alertContainer').appendChild(div);
+            setTimeout(() => div.remove(), 5000);
         }
 
-        function parseNumber(value) {
-            if (typeof value === 'number') return value;
-            if (typeof value === 'string') {
-                let cleaned = value.replace(/[^0-9.-]/g, '');
+        function parseNumber(v) {
+            if(typeof v==='number') return v;
+            if(typeof v==='string') {
+                let cleaned = v.replace(/[^0-9.-]/g,'');
                 let num = parseFloat(cleaned);
-                if (!isNaN(num)) return num;
+                if(!isNaN(num)) return num;
             }
             return 0;
         }
 
-        function extractDate(datetime) {
-            if (!datetime) return '';
-            const str = String(datetime);
-            const match = str.match(/\d{4}-\d{2}-\d{2}/);
-            if (match) return match[0];
-            const matchDMY = str.match(/(\d{2})\/(\d{2})\/(\d{4})/);
-            if (matchDMY) return `${matchDMY[3]}-${matchDMY[2]}-${matchDMY[1]}`;
-            const date = new Date(str);
-            if (!isNaN(date.getTime())) return date.toISOString().split('T')[0];
+        function extractDate(dt) {
+            if(!dt) return '';
+            let str = String(dt);
+            let match = str.match(/\d{4}-\d{2}-\d{2}/);
+            if(match) return match[0];
+            let matchDMY = str.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+            if(matchDMY) return `${matchDMY[3]}-${matchDMY[2]}-${matchDMY[1]}`;
+            let date = new Date(str);
+            if(!isNaN(date.getTime())) return date.toISOString().split('T')[0];
             return '';
         }
 
-        function formatRupiah(value) {
-            const num = parseNumber(value);
-            if (num === 0 && value !== 0) return value;
-            return `Rp ${num.toLocaleString('id-ID')}`;
-        }
-
-        function readExcelFile(file) {
+        function readExcel(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     try {
                         const data = new Uint8Array(e.target.result);
                         const workbook = XLSX.read(data, { type: 'array' });
-                        const sheetName = workbook.SheetNames[0];
-                        const worksheet = workbook.Sheets[sheetName];
-                        const jsonData = XLSX.utils.sheet_to_json(worksheet);
-                        resolve(jsonData);
-                    } catch (err) {
-                        reject(err);
-                    }
+                        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+                        const json = XLSX.utils.sheet_to_json(sheet);
+                        resolve(json);
+                    } catch(err) { reject(err); }
                 };
                 reader.onerror = reject;
                 reader.readAsArrayBuffer(file);
@@ -958,37 +638,39 @@
         }
 
         async function handleFileUpload(file, type) {
-            if (!file) return;
+            if(!file) return;
             document.getElementById('loading').style.display = 'flex';
-            
             try {
-                const data = await readExcelFile(file);
-                
-                if (type === 'manual') {
+                const data = await readExcel(file);
+                if(type === 'manual') {
                     manualData = data;
                     document.getElementById('manualFileName').textContent = file.name;
                     document.getElementById('manualRowCount').textContent = data.length;
                     document.getElementById('manualFileInfo').style.display = 'flex';
                     document.getElementById('statManual').textContent = data.length;
-                    showAlert(`✓ Berhasil upload ${data.length} data manual`, 'success');
-                } else {
+                    showAlert(`✓ Manual: ${data.length} data`, 'success');
+                } else if(type === 'qrpay') {
                     qrpayData = data;
                     document.getElementById('qrpayFileName').textContent = file.name;
                     document.getElementById('qrpayRowCount').textContent = data.length;
                     document.getElementById('qrpayFileInfo').style.display = 'flex';
                     document.getElementById('statQRPay').textContent = data.length;
-                    showAlert(`✓ Berhasil upload ${data.length} data QRPay`, 'success');
+                    showAlert(`✓ QRPay: ${data.length} data`, 'success');
+                } else if(type === 'withdraw') {
+                    withdrawData = data;
+                    document.getElementById('withdrawFileName').textContent = file.name;
+                    document.getElementById('withdrawRowCount').textContent = data.length;
+                    document.getElementById('withdrawFileInfo').style.display = 'flex';
+                    document.getElementById('statWithdraw').textContent = data.length;
+                    showAlert(`✓ Withdraw: ${data.length} data`, 'success');
                 }
-                
                 document.getElementById('stats').style.display = 'grid';
                 document.getElementById('filterPanel').style.display = 'block';
-                
-                if (manualData && qrpayData) {
+                if(manualData && qrpayData && withdrawData) {
                     document.getElementById('filterBtn').disabled = false;
                 }
-                
-            } catch (error) {
-                showAlert(`✗ Error: ${error.message}`, 'error');
+            } catch(err) {
+                showAlert(`Error: ${err.message}`, 'error');
             } finally {
                 document.getElementById('loading').style.display = 'none';
             }
@@ -996,138 +678,131 @@
 
         function isBonusTransaction(record) {
             const toBank = String(record['To Bank'] || '').toUpperCase();
-            return activeKeywords.some(keyword => toBank.includes(keyword.toUpperCase()));
+            return activeKeywords.some(kw => toBank.includes(kw.toUpperCase()));
         }
 
-        function isWithinNominal(deposit, minVal, maxVal) {
-            const nominal = parseNumber(deposit);
-            return nominal >= minVal && nominal <= maxVal;
-        }
-
-        function isWithinDate(dateStr, startDate, endDate) {
-            if (!startDate && !endDate) return true;
-            const recordDate = extractDate(dateStr);
-            if (!recordDate) return true;
-            if (startDate && recordDate < startDate) return false;
-            if (endDate && recordDate > endDate) return false;
-            return true;
+        function isWithdrawUser(userName, date) {
+            if(!withdrawData) return false;
+            const userLower = String(userName).trim().toLowerCase();
+            const recordDate = extractDate(date);
+            return withdrawData.some(wd => {
+                const wdUser = String(wd['User Name'] || '').trim().toLowerCase();
+                const wdDate = extractDate(wd['Date/Time'] || '');
+                return wdUser === userLower && wdDate === recordDate;
+            });
         }
 
         window.applyFilters = function() {
-            if (!manualData || !qrpayData) {
-                showAlert('Harap upload kedua file terlebih dahulu', 'error');
+            if(!manualData || !qrpayData || !withdrawData) {
+                showAlert('Harap upload ketiga file (Manual, QRPay, Withdraw)', 'error');
                 return;
             }
-            
             document.getElementById('loading').style.display = 'flex';
-            
             setTimeout(() => {
                 try {
-                    const minNominal = parseFloat(document.getElementById('minNominal').value) || 0;
-                    const maxNominal = parseFloat(document.getElementById('maxNominal').value) || Infinity;
+                    const minNom = parseFloat(document.getElementById('minNominal').value) || 0;
+                    const maxNom = parseFloat(document.getElementById('maxNominal').value) || Infinity;
                     const startDate = document.getElementById('startDate').value;
                     const endDate = document.getElementById('endDate').value;
-                    
-                    // Create Set of users who already got bonus
+
+                    // Set user yang sudah dapat bonus dari Manual Deposit
                     const bonusSet = new Set();
-                    
-                    manualData.forEach(record => {
-                        if (isBonusTransaction(record)) {
-                            const userName = String(record['User Name'] || '').trim().toLowerCase();
-                            const date = extractDate(record['Date/Time']);
-                            if (userName && date) {
-                                bonusSet.add(`${userName}|${date}`);
-                            }
+                    manualData.forEach(rec => {
+                        if(isBonusTransaction(rec)) {
+                            const user = String(rec['User Name'] || '').trim().toLowerCase();
+                            const date = extractDate(rec['Date/Time']);
+                            if(user && date) bonusSet.add(`${user}|${date}`);
                         }
                     });
-                    
-                    // Filter QRPay data
-                    let filtered = qrpayData.filter(record => {
-                        const userName = String(record['User Name'] || '').trim().toLowerCase();
-                        const date = extractDate(record['Date/Time']);
-                        const deposit = record['Deposit'];
-                        
-                        if (!userName || !date) return false;
-                        
-                        const key = `${userName}|${date}`;
-                        if (bonusSet.has(key)) return false;
-                        
-                        if (!isWithinNominal(deposit, minNominal, maxNominal)) return false;
-                        
-                        if (!isWithinDate(record['Date/Time'], startDate, endDate)) return false;
-                        
+                    document.getElementById('statBonus').textContent = bonusSet.size;
+
+                    // Set user yang sudah withdraw
+                    const withdrawSet = new Set();
+                    withdrawData.forEach(wd => {
+                        const user = String(wd['User Name'] || '').trim().toLowerCase();
+                        const date = extractDate(wd['Date/Time'] || '');
+                        if(user && date) withdrawSet.add(`${user}|${date}`);
+                    });
+                    document.getElementById('statWDed').textContent = withdrawSet.size;
+
+                    // Filter QRPay: belum dapat bonus DAN belum withdraw
+                    const filtered = qrpayData.filter(rec => {
+                        const user = String(rec['User Name'] || '').trim().toLowerCase();
+                        const date = extractDate(rec['Date/Time']);
+                        if(!user || !date) return false;
+                        const key = `${user}|${date}`;
+                        // Cek bonus
+                        if(bonusSet.has(key)) return false;
+                        // Cek withdraw
+                        if(withdrawSet.has(key)) return false;
+                        // Cek nominal
+                        const deposit = parseNumber(rec['Deposit']);
+                        if(deposit < minNom || deposit > maxNom) return false;
+                        // Cek tanggal
+                        if(startDate && date < startDate) return false;
+                        if(endDate && date > endDate) return false;
                         return true;
-                    }).map(record => ({
-                        'User Name': record['User Name'],
-                        'Deposit': record['Deposit'],
-                        'Date/Time': record['Date/Time'],
-                        'Reference': record['Reference'] || '-',
-                        'RRN': record['RRN'] || '-'
+                    }).map(rec => ({
+                        'User Name': rec['User Name'],
+                        'Deposit': rec['Deposit'],
+                        'Date/Time': rec['Date/Time'],
+                        'Reference': rec['Reference'] || '-',
+                        'RRN': rec['RRN'] || '-',
+                        'Status': 'Belum Bonus & Belum WD'
                     }));
-                    
+
                     filteredResult = filtered;
-                    
-                    document.getElementById('statFiltered').textContent = filtered.length;
                     document.getElementById('statResult').textContent = filtered.length;
-                    document.getElementById('resultBadge').innerHTML = `<i class="fas fa-chart-line"></i> ${filtered.length} User Belum Dapat Bonus | Nominal: ${formatRupiah(minNominal)} - ${formatRupiah(maxNominal)}`;
-                    
+                    document.getElementById('resultBadge').innerHTML = `<i class="fas fa-chart-line"></i> ${filtered.length} User Eligible`;
+
                     const tbody = document.getElementById('resultBody');
                     tbody.innerHTML = '';
-                    
-                    if (filtered.length === 0) {
-                        tbody.innerHTML = '<tr class="empty-state"><td colspan="5"><i class="fas fa-inbox"></i> Tidak ada data yang sesuai dengan filter</td></tr>';
+                    if(filtered.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center">Tidak ada user yang memenuhi kriteria</td></tr>';
                     } else {
                         filtered.forEach(row => {
-                            const tr = document.createElement('tr');
+                            let depositDisplay = parseNumber(row['Deposit']);
+                            let depositStr = `Rp ${depositDisplay.toLocaleString('id-ID')}`;
+                            if(typeof row['Deposit'] === 'string' && row['Deposit'].includes('.')) depositStr = row['Deposit'];
+                            tr = document.createElement('tr');
                             tr.innerHTML = `
-                                <td style="font-weight: 600;">${escapeHtml(String(row['User Name']))}</td>
-                                <td><span class="badge-amount">${formatRupiah(row['Deposit'])}</span></td>
-                                <td>${escapeHtml(String(row['Date/Time']))}</td>
-                                <td><code style="background:#f1f5f9; padding:4px 8px; border-radius:8px;">${escapeHtml(String(row['Reference']))}</code></td>
-                                <td><code style="background:#f1f5f9; padding:4px 8px; border-radius:8px;">${escapeHtml(String(row['RRN']))}</code></td>
+                                <td style="font-weight:600">${escapeHtml(row['User Name'])}</td>
+                                <td>${depositStr}</td>
+                                <td>${escapeHtml(row['Date/Time'])}</td>
+                                <td><code>${escapeHtml(row['Reference'])}</code></td>
+                                <td><code>${escapeHtml(row['RRN'])}</code></td>
+                                <td><span style="background:#dbeafe; padding:4px 12px; border-radius:20px; font-size:0.7rem;">✅ Eligible</span></td>
                             `;
                             tbody.appendChild(tr);
                         });
                     }
-                    
                     document.getElementById('resultSection').style.display = 'block';
                     document.getElementById('downloadBtn').disabled = false;
-                    showAlert(`✨ Ditemukan ${filtered.length} user belum dapat bonus`, 'success');
-                    
-                } catch (error) {
-                    showAlert(`✗ Error filtering: ${error.message}`, 'error');
+                    showAlert(`✨ Ditemukan ${filtered.length} user yang BELUM dapat bonus DAN BELUM withdraw`, 'success');
+                } catch(err) {
+                    showAlert(`Error: ${err.message}`, 'error');
                 } finally {
                     document.getElementById('loading').style.display = 'none';
                 }
             }, 100);
         };
 
-        function escapeHtml(text) {
-            if (!text) return '-';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
+        function escapeHtml(t) { if(!t) return '-'; const d=document.createElement('div'); d.textContent=t; return d.innerHTML; }
 
         window.downloadExcel = function() {
-            if (!filteredResult || filteredResult.length === 0) {
-                showAlert('Tidak ada data untuk didownload', 'error');
-                return;
-            }
-            
-            const exportData = filteredResult.map(row => ({
-                'User Name': row['User Name'],
-                'Deposit': formatRupiah(row['Deposit']),
-                'Date/Time': row['Date/Time'],
-                'Reference': row['Reference'],
-                'RRN': row['RRN']
-            }));
-            
-            const ws = XLSX.utils.json_to_sheet(exportData);
+            if(!filteredResult || filteredResult.length===0) { showAlert('Tidak ada data', 'error'); return; }
+            const ws = XLSX.utils.json_to_sheet(filteredResult.map(r=>({
+                'User Name': r['User Name'],
+                'Deposit': r['Deposit'],
+                'Date/Time': r['Date/Time'],
+                'Reference': r['Reference'],
+                'RRN': r['RRN'],
+                'Status': r['Status']
+            })));
             const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, 'Belum Dapat Bonus');
-            XLSX.writeFile(wb, `deposit_belum_bonus_${new Date().toISOString().split('T')[0]}.xlsx`);
-            showAlert(`✓ Download ${filteredResult.length} data berhasil`, 'success');
+            XLSX.utils.book_append_sheet(wb, ws, 'Eligible Users');
+            XLSX.writeFile(wb, `eligible_users_${new Date().toISOString().split('T')[0]}.xlsx`);
+            showAlert(`✓ Download ${filteredResult.length} data`, 'success');
         };
 
         window.resetFilters = function() {
@@ -1135,138 +810,101 @@
             document.getElementById('maxNominal').value = '999999999';
             document.getElementById('startDate').value = '';
             document.getElementById('endDate').value = '';
-            showAlert('Filter nominal dan tanggal telah direset', 'info');
-            
-            if (manualData && qrpayData) {
-                applyFilters();
-            }
+            showAlert('Filter direset', 'info');
+            if(manualData && qrpayData && withdrawData) applyFilters();
         };
 
         window.removeFile = function(type) {
-            if (type === 'manual') {
-                manualData = null;
-                document.getElementById('manualFileInfo').style.display = 'none';
-                document.getElementById('manualFile').value = '';
-                document.getElementById('statManual').textContent = '0';
-            } else {
-                qrpayData = null;
-                document.getElementById('qrpayFileInfo').style.display = 'none';
-                document.getElementById('qrpayFile').value = '';
-                document.getElementById('statQRPay').textContent = '0';
-            }
-            filteredResult = null;
-            document.getElementById('resultSection').style.display = 'none';
-            document.getElementById('statFiltered').textContent = '0';
-            document.getElementById('statResult').textContent = '0';
-            document.getElementById('filterBtn').disabled = !(manualData && qrpayData);
-            document.getElementById('downloadBtn').disabled = true;
-            
-            if (!manualData || !qrpayData) {
-                document.getElementById('filterPanel').style.display = 'none';
-                document.getElementById('stats').style.display = 'none';
-            }
+            if(type==='manual') { manualData=null; document.getElementById('manualFileInfo').style.display='none'; document.getElementById('statManual').textContent='0'; }
+            if(type==='qrpay') { qrpayData=null; document.getElementById('qrpayFileInfo').style.display='none'; document.getElementById('statQRPay').textContent='0'; }
+            if(type==='withdraw') { withdrawData=null; document.getElementById('withdrawFileInfo').style.display='none'; document.getElementById('statWithdraw').textContent='0'; }
+            filteredResult=null;
+            document.getElementById('resultSection').style.display='none';
+            document.getElementById('statBonus').textContent='0';
+            document.getElementById('statWDed').textContent='0';
+            document.getElementById('statResult').textContent='0';
+            document.getElementById('filterBtn').disabled = !(manualData && qrpayData && withdrawData);
+            document.getElementById('downloadBtn').disabled=true;
+            if(!manualData || !qrpayData || !withdrawData) { document.getElementById('filterPanel').style.display='none'; document.getElementById('stats').style.display='none'; }
         };
 
         window.resetAll = function() {
-            manualData = null;
-            qrpayData = null;
-            filteredResult = null;
-            activeKeywords = ['BONUS DEPOSIT HARIAN'];
-            document.getElementById('manualFileInfo').style.display = 'none';
-            document.getElementById('qrpayFileInfo').style.display = 'none';
-            document.getElementById('manualFile').value = '';
-            document.getElementById('qrpayFile').value = '';
-            document.getElementById('statManual').textContent = '0';
-            document.getElementById('statQRPay').textContent = '0';
-            document.getElementById('statFiltered').textContent = '0';
-            document.getElementById('statResult').textContent = '0';
-            document.getElementById('resultSection').style.display = 'none';
-            document.getElementById('filterBtn').disabled = true;
-            document.getElementById('downloadBtn').disabled = true;
-            document.getElementById('stats').style.display = 'none';
-            document.getElementById('filterPanel').style.display = 'none';
-            document.getElementById('minNominal').value = '0';
-            document.getElementById('maxNominal').value = '999999999';
-            document.getElementById('startDate').value = '';
-            document.getElementById('endDate').value = '';
-            
-            // Reset keyword tags
-            document.querySelectorAll('.keyword-tag').forEach(tag => {
-                if (tag.dataset.keyword === 'BONUS DEPOSIT HARIAN') {
-                    tag.classList.add('active');
-                } else {
-                    tag.classList.remove('active');
-                }
+            manualData=qrpayData=withdrawData=filteredResult=null;
+            activeKeywords = ['BONUS DEPOSIT HARIAN', 'SCB A BONUS DEPOSIT HARIAN'];
+            document.querySelectorAll('.keyword-tag').forEach(tag=>{
+                if(tag.dataset.keyword==='BONUS DEPOSIT HARIAN' || tag.dataset.keyword==='SCB A BONUS DEPOSIT HARIAN') tag.classList.add('active');
+                else tag.classList.remove('active');
             });
-            updateActiveKeywordsDisplay();
-            showAlert('🔄 Semua data telah direset', 'info');
+            updateActiveKeywords();
+            document.getElementById('manualFileInfo').style.display='none';
+            document.getElementById('qrpayFileInfo').style.display='none';
+            document.getElementById('withdrawFileInfo').style.display='none';
+            document.getElementById('manualFile').value='';
+            document.getElementById('qrpayFile').value='';
+            document.getElementById('withdrawFile').value='';
+            document.getElementById('statManual').textContent='0';
+            document.getElementById('statQRPay').textContent='0';
+            document.getElementById('statWithdraw').textContent='0';
+            document.getElementById('statBonus').textContent='0';
+            document.getElementById('statWDed').textContent='0';
+            document.getElementById('statResult').textContent='0';
+            document.getElementById('resultSection').style.display='none';
+            document.getElementById('filterBtn').disabled=true;
+            document.getElementById('downloadBtn').disabled=true;
+            document.getElementById('stats').style.display='none';
+            document.getElementById('filterPanel').style.display='none';
+            document.getElementById('minNominal').value='0';
+            document.getElementById('maxNominal').value='999999999';
+            document.getElementById('startDate').value='';
+            document.getElementById('endDate').value='';
+            showAlert('Semua data direset', 'info');
         };
 
-        function updateActiveKeywordsDisplay() {
+        function updateActiveKeywords() {
             document.getElementById('activeKeywords').innerHTML = `<i class="fas fa-check-circle"></i> <strong>Active:</strong> ${activeKeywords.join(', ')}`;
         }
 
         window.addCustomKeyword = function() {
-            const input = document.getElementById('customKeyword');
-            const keyword = input.value.trim().toUpperCase();
-            if (keyword && !activeKeywords.includes(keyword)) {
-                activeKeywords.push(keyword);
-                updateActiveKeywordsDisplay();
-                input.value = '';
-                showAlert(`✓ Kata kunci "${keyword}" ditambahkan`, 'success');
+            const inp = document.getElementById('customKeyword');
+            const kw = inp.value.trim().toUpperCase();
+            if(kw && !activeKeywords.includes(kw)) {
+                activeKeywords.push(kw);
+                updateActiveKeywords();
+                inp.value='';
+                showAlert(`✓ Kata kunci "${kw}" ditambahkan`, 'success');
             }
         };
 
-        // Setup keyword tags
         document.querySelectorAll('.keyword-tag').forEach(tag => {
             tag.addEventListener('click', function() {
-                const keyword = this.dataset.keyword;
-                if (this.classList.contains('active')) {
+                const kw = this.dataset.keyword;
+                if(this.classList.contains('active')) {
                     this.classList.remove('active');
-                    const index = activeKeywords.indexOf(keyword);
-                    if (index > -1) activeKeywords.splice(index, 1);
+                    const idx = activeKeywords.indexOf(kw);
+                    if(idx>-1) activeKeywords.splice(idx,1);
                 } else {
                     this.classList.add('active');
-                    if (!activeKeywords.includes(keyword)) activeKeywords.push(keyword);
+                    if(!activeKeywords.includes(kw)) activeKeywords.push(kw);
                 }
-                updateActiveKeywordsDisplay();
+                updateActiveKeywords();
             });
         });
 
-        // File upload handlers
-        document.getElementById('manualFile').addEventListener('change', (e) => {
-            if (e.target.files[0]) handleFileUpload(e.target.files[0], 'manual');
-        });
-        document.getElementById('qrpayFile').addEventListener('change', (e) => {
-            if (e.target.files[0]) handleFileUpload(e.target.files[0], 'qrpay');
-        });
+        document.getElementById('manualFile').addEventListener('change', e=>{ if(e.target.files[0]) handleFileUpload(e.target.files[0],'manual'); });
+        document.getElementById('qrpayFile').addEventListener('change', e=>{ if(e.target.files[0]) handleFileUpload(e.target.files[0],'qrpay'); });
+        document.getElementById('withdrawFile').addEventListener('change', e=>{ if(e.target.files[0]) handleFileUpload(e.target.files[0],'withdraw'); });
 
-        // Drag & drop
         function setupDragDrop(areaId, inputId, type) {
             const area = document.getElementById(areaId);
             const input = document.getElementById(inputId);
-            
-            area.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                area.style.borderColor = '#3b82f6';
-                area.style.background = '#eff6ff';
-            });
-            area.addEventListener('dragleave', () => {
-                area.style.borderColor = '#cbd5e1';
-                area.style.background = '#f8fafc';
-            });
-            area.addEventListener('drop', (e) => {
-                e.preventDefault();
-                area.style.borderColor = '#cbd5e1';
-                area.style.background = '#f8fafc';
-                const file = e.dataTransfer.files[0];
-                if (file) handleFileUpload(file, type);
-            });
-            area.addEventListener('click', () => input.click());
+            area.addEventListener('dragover', e=>{ e.preventDefault(); area.style.borderColor='#3b82f6'; area.style.background='#eff6ff'; });
+            area.addEventListener('dragleave', ()=>{ area.style.borderColor='#cbd5e1'; area.style.background='#f8fafc'; });
+            area.addEventListener('drop', e=>{ e.preventDefault(); area.style.borderColor='#cbd5e1'; area.style.background='#f8fafc'; if(e.dataTransfer.files[0]) handleFileUpload(e.dataTransfer.files[0], type); });
+            area.addEventListener('click', ()=>input.click());
         }
-
-        setupDragDrop('manualUploadArea', 'manualFile', 'manual');
-        setupDragDrop('qrpayUploadArea', 'qrpayFile', 'qrpay');
+        setupDragDrop('manualUploadArea','manualFile','manual');
+        setupDragDrop('qrpayUploadArea','qrpayFile','qrpay');
+        setupDragDrop('withdrawUploadArea','withdrawFile','withdraw');
     </script>
 </body>
 </html>
