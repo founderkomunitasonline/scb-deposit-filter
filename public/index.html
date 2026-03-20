@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>SCB Deposit Filter - Bonus Harian</title>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        /* Upload Cards */
+        .upload-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 24px;
+            margin-bottom: 30px;
+        }
+
+        .upload-card {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .upload-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        }
+
+        .upload-card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .upload-area {
+            border: 2px dashed #ddd;
+            border-radius: 16px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #fafafa;
+        }
+
+        .upload-area:hover {
+            border-color: #667eea;
+            background: #f5f3ff;
+        }
+
+        .upload-area.drag-over {
+            border-color: #667eea;
+            background: #ede9fe;
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .upload-area p {
+            color: #666;
+            margin-top: 8px;
+        }
+
+        .file-info {
+            margin-top: 12px;
+            padding: 10px;
+            background: #e8f5e9;
+            border-radius: 10px;
+            color: #2e7d32;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .remove-file {
+            background: #ffebee;
+            color: #c62828;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .remove-file:hover {
+            background: #ffcdd2;
+        }
+
+        /* Statistics */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: #666;
+            margin-top: 8px;
+            font-size: 0.9rem;
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 32px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(102,126,234,0.4);
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-success:hover:not(:disabled) {
+            background: #059669;
+            transform: scale(1.05);
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover:not(:disabled) {
+            background: #dc2626;
+            transform: scale(1.05);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Loading */
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Results Table */
+        .result-section {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+
+        .result-section h3 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f8f9fa;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #555;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e5e7eb;
+            color: #666;
+        }
+
+        tr:hover {
+            background: #faf5ff;
+        }
+
+        /* Alert */
+        .alert {
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .alert-info {
+            background: #e0f2fe;
+            color: #075985;
+            border: 1px solid #bae6fd;
+        }
+
+        /* Info Panel */
+        .info-panel {
+            margin-top: 30px;
+            background: #fef9e3;
+            border-radius: 16px;
+            padding: 20px;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .info-panel h4 {
+            color: #92400e;
+            margin-bottom: 12px;
+        }
+
+        .info-panel ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .info-panel li {
+            padding: 6px 0;
+            color: #b45309;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: white;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .upload-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>📊 SCB Deposit Filter</h1>
+            <p>Filter data deposit untuk menampilkan user yang belum mendapatkan bonus deposit harian</p>
+        </div>
+
+        <!-- Alert Container -->
+        <div id="alertContainer"></div>
+
+        <!-- Upload Section -->
+        <div class="upload-section">
+            <!-- Manual Deposit Card -->
+            <div class="upload-card">
+                <h2>
+                    <span>📁</span>
+                    Deposit History (Manual)
+                </h2>
+                <div id="manualUploadArea" class="upload-area">
+                    <div class="upload-icon">📂</div>
+                    <p>Klik atau drag & drop file di sini</p>
+                    <p style="font-size: 0.8rem; color: #999;">Format: .xlsx, .xls, .csv</p>
+                    <input type="file" id="manualFile" accept=".xlsx,.xls,.csv" style="display: none;">
+                </div>
+                <div id="manualFileInfo" style="display: none;" class="file-info">
+                    <span>📄 <span id="manualFileName"></span> (<span id="manualRowCount"></span> data)</span>
+                    <button class="remove-file" onclick="removeFile('manual')">Hapus</button>
+                </div>
+            </div>
+
+            <!-- QRPay Deposit Card -->
+            <div class="upload-card">
+                <h2>
+                    <span>📱</span>
+                    Deposit History (QRPay)
+                </h2>
+                <div id="qrpayUploadArea" class="upload-area">
+                    <div class="upload-icon">📱</div>
+                    <p>Klik atau drag & drop file di sini</p>
+                    <p style="font-size: 0.8rem; color: #999;">Format: .xlsx, .xls, .csv</p>
+                    <input type="file" id="qrpayFile" accept=".xlsx,.xls,.csv" style="display: none;">
+                </div>
+                <div id="qrpayFileInfo" style="display: none;" class="file-info">
+                    <span>📄 <span id="qrpayFileName"></span> (<span id="qrpayRowCount"></span> data)</span>
+                    <button class="remove-file" onclick="removeFile('qrpay')">Hapus</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="stats" id="stats" style="display: none;">
+            <div class="stat-card">
+                <div class="stat-number" id="statManual">0</div>
+                <div class="stat-label">Total Data Manual</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="statQRPay">0</div>
+                <div class="stat-label">Total Data QRPay</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="statResult">0</div>
+                <div class="stat-label">Belum Dapat Bonus</div>
+            </div>
+        </div>
+
+        <!-- Button Group -->
+        <div class="button-group">
+            <button id="filterBtn" class="btn btn-primary" disabled onclick="filterData()">
+                🔍 Filter Data
+            </button>
+            <button id="downloadBtn" class="btn btn-success" disabled onclick="downloadExcel()">
+                📥 Download Excel
+            </button>
+            <button class="btn btn-danger" onclick="resetAll()">
+                🔄 Reset Semua
+            </button>
+        </div>
+
+        <!-- Results Table -->
+        <div id="resultSection" class="result-section" style="display: none;">
+            <h3 id="resultTitle"></h3>
+            <div style="overflow-x: auto;">
+                <table id="resultTable">
+                    <thead>
+                        <tr>
+                            <th>User Name</th>
+                            <th>Deposit</th>
+                            <th>Date/Time</th>
+                            <th>Reference</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Info Panel -->
+        <div class="info-panel">
+            <h4>📌 Informasi Filter</h4>
+            <ul>
+                <li>✓ Data Manual dengan kolom "To Bank" mengandung "BONUS DEPOSIT HARIAN" dianggap sudah mendapatkan bonus</li>
+                <li>✓ Perbandingan dilakukan berdasarkan User Name dan Tanggal yang sama</li>
+                <li>✓ Hanya menampilkan data QRPay yang belum mendapatkan bonus di tanggal yang sama</li>
+                <li>✓ Mendukung file Excel (.xlsx, .xls, .csv)</li>
+                <li>✓ Data diproses di server untuk performa optimal</li>
+            </ul>
+        </div>
+
+        <footer>
+            <p>SCB Deposit Filter © 2024 - Dibuat untuk memfilter data deposit bonus harian</p>
+        </footer>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading" style="display: none;" class="loading">
+        <div class="spinner"></div>
+    </div>
+
+    <script>
+        // State Management
+        let manualData = null;
+        let qrpayData = null;
+        let filteredResult = null;
+        let manualFileName = '';
+        let qrpayFileName = '';
+
+        // DOM Elements
+        const manualFileInput = document.getElementById('manualFile');
+        const qrpayFileInput = document.getElementById('qrpayFile');
+        const manualUploadArea = document.getElementById('manualUploadArea');
+        const qrpayUploadArea = document.getElementById('qrpayUploadArea');
+        const filterBtn = document.getElementById('filterBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const loadingDiv = document.getElementById('loading');
+        const alertContainer = document.getElementById('alertContainer');
+
+        // Show Alert
+        function showAlert(message, type = 'info') {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.innerHTML = `
+                <span>${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}</span>
+                <span>${message}</span>
+            `;
+            alertContainer.appendChild(alertDiv);
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+
+        // Read Excel File
+        function readExcelFile(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const data = new Uint8Array(e.target.result);
+                        const workbook = XLSX.read(data, { type: 'array' });
+                        const sheetName = workbook.SheetNames[0];
+                        const worksheet = workbook.Sheets[sheetName];
+                        const jsonData = XLSX.utils.sheet_to_json(worksheet);
+                        resolve(jsonData);
+                    } catch (err) {
+                        reject(err);
+                    }
+                };
+                reader.onerror = reject;
+                reader.readAsArrayBuffer(file);
+            });
+        }
+
+        // Handle File Upload
+        async function handleFileUpload(file, type) {
+            if (!file) return;
+            
+            try {
+                const data = await readExcelFile(file);
+                
+                if (type === 'manual') {
+                    manualData = data;
+                    manualFileName = file.name;
+                    document.getElementById('manualFileName').textContent = file.name;
+                    document.getElementById('manualRowCount').textContent = data.length;
+                    document.getElementById('manualFileInfo').style.display = 'flex';
+                    document.getElementById('statManual').textContent = data.length;
+                    document.querySelector('#manualUploadArea .upload-icon').innerHTML = '✅';
+                    showAlert(`Berhasil upload ${data.length} data manual`, 'success');
+                } else {
+                    qrpayData = data;
+                    qrpayFileName = file.name;
+                    document.getElementById('qrpayFileName').textContent = file.name;
+                    document.getElementById('qrpayRowCount').textContent = data.length;
+                    document.getElementById('qrpayFileInfo').style.display = 'flex';
+                    document.getElementById('statQRPay').textContent = data.length;
+                    document.querySelector('#qrpayUploadArea .upload-icon').innerHTML = '✅';
+                    showAlert(`Berhasil upload ${data.length} data QRPay`, 'success');
+                }
+                
+                document.getElementById('stats').style.display = 'grid';
+                
+                // Enable filter button if both files are uploaded
+                if (manualData && qrpayData) {
+                    filterBtn.disabled = false;
+                }
+                
+            } catch (error) {
+                console.error('Error reading file:', error);
+                showAlert(`Error membaca file: ${error.message}`, 'error');
+            }
+        }
+
+        // File Upload Event Listeners
+        manualFileInput.addEventListener('change', (e) => {
+            if (e.target.files[0]) handleFileUpload(e.target.files[0], 'manual');
+        });
+
+        qrpayFileInput.addEventListener('change', (e) => {
+            if (e.target.files[0]) handleFileUpload(e.target.files[0], 'qrpay');
+        });
+
+        // Drag & Drop
+        function setupDragDrop(area, input, type) {
+            area.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                area.classList.add('drag-over');
+            });
+            
+            area.addEventListener('dragleave', () => {
+                area.classList.remove('drag-over');
+            });
+            
+            area.addEventListener('drop', (e) => {
+                e.preventDefault();
+                area.classList.remove('drag-over');
+                const file = e.dataTransfer.files[0];
+                if (file) handleFileUpload(file, type);
+            });
+            
+            area.addEventListener('click', () => {
+                input.click();
+            });
+        }
+
+        setupDragDrop(manualUploadArea, manualFileInput, 'manual');
+        setupDragDrop(qrpayUploadArea, qrpayFileInput, 'qrpay');
+
+        // Remove File
+        window.removeFile = (type) => {
+            if (type === 'manual') {
+                manualData = null;
+                manualFileName = '';
+                document.getElementById('manualFileInfo').style.display = 'none';
+                document.getElementById('manualFile').value = '';
+                document.getElementById('statManual').textContent = '0';
+                document.querySelector('#manualUploadArea .upload-icon').innerHTML = '📂';
+            } else {
+                qrpayData = null;
+                qrpayFileName = '';
+                document.getElementById('qrpayFileInfo').style.display = 'none';
+                document.getElementById('qrpayFile').value = '';
+                document.getElementById('statQRPay').textContent = '0';
+                document.querySelector('#qrpayUploadArea .upload-icon').innerHTML = '📱';
+            }
+            
+            filteredResult = null;
+            document.getElementById('resultSection').style.display = 'none';
+            document.getElementById('statResult').textContent = '0';
+            filterBtn.disabled = !(manualData && qrpayData);
+            downloadBtn.disabled = true;
+        };
+
+        // Filter Data via API
+        window.filterData = async () => {
+            if (!manualData || !qrpayData) {
+                showAlert('Harap upload kedua file terlebih dahulu', 'error');
+                return;
+            }
+            
+            loadingDiv.style.display = 'flex';
+            
+            try {
+                const response = await fetch('/api/filter', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        manualData: manualData,
+                        qrpayData: qrpayData
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    filteredResult = result.data;
+                    document.getElementById('statResult').textContent = result.count;
+                    document.getElementById('resultTitle').innerHTML = `📊 Hasil Filter: ${result.count} User Belum Dapat Bonus`;
+                    
+                    // Render table
+                    const tbody = document.getElementById('resultBody');
+                    tbody.innerHTML = '';
+                    
+                    result.data.forEach(row => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${escapeHtml(row['User Name'])}</td>
+                            <td>${formatRupiah(row['Deposit'])}</td>
+                            <td>${escapeHtml(row['Date/Time'])}</td>
+                            <td>${escapeHtml(row['Reference'])}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                    
+                    document.getElementById('resultSection').style.display = 'block';
+                    downloadBtn.disabled = false;
+                    showAlert(result.message, 'success');
+                } else {
+                    showAlert(result.error || 'Terjadi kesalahan', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('Gagal memfilter data: ' + error.message, 'error');
+            } finally {
+                loadingDiv.style.display = 'none';
+            }
+        };
+
+        // Format Rupiah
+        function formatRupiah(value) {
+            if (typeof value === 'number') {
+                return `Rp ${value.toLocaleString('id-ID')}`;
+            }
+            return value;
+        }
+
+        // Escape HTML
+        function escapeHtml(text) {
+            if (!text) return '-';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Download Excel
+        window.downloadExcel = () => {
+            if (!filteredResult || filteredResult.length === 0) {
+                showAlert('Tidak ada data untuk didownload', 'error');
+                return;
+            }
+            
+            const ws = XLSX.utils.json_to_sheet(filteredResult);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Belum Dapat Bonus');
+            
+            const fileName = `deposit_belum_bonus_${new Date().toISOString().split('T')[0]}.xlsx`;
+            XLSX.writeFile(wb, fileName);
+            showAlert(`Berhasil download ${filteredResult.length} data`, 'success');
+        };
+
+        // Reset All
+        window.resetAll = () => {
+            manualData = null;
+            qrpayData = null;
+            filteredResult = null;
+            manualFileName = '';
+            qrpayFileName = '';
+            
+            document.getElementById('manualFileInfo').style.display = 'none';
+            document.getElementById('qrpayFileInfo').style.display = 'none';
+            document.getElementById('manualFile').value = '';
+            document.getElementById('qrpayFile').value = '';
+            document.getElementById('statManual').textContent = '0';
+            document.getElementById('statQRPay').textContent = '0';
+            document.getElementById('statResult').textContent = '0';
+            document.getElementById('resultSection').style.display = 'none';
+            document.querySelector('#manualUploadArea .upload-icon').innerHTML = '📂';
+            document.querySelector('#qrpayUploadArea .upload-icon').innerHTML = '📱';
+            
+            filterBtn.disabled = true;
+            downloadBtn.disabled = true;
+            document.getElementById('stats').style.display = 'none';
+            
+            showAlert('Semua data telah direset', 'info');
+        };
+    </script>
+</body>
+</html>
