@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
+        /* [STYLE SAMA SEPERTI SEBELUMNYA] */
         * {
             margin: 0;
             padding: 0;
@@ -191,7 +192,7 @@
         }
         .file-list {
             padding: 0 16px 16px;
-            max-height: 160px;
+            max-height: 200px;
             overflow-y: auto;
         }
         .file-item {
@@ -210,6 +211,7 @@
             align-items: center;
             gap: 8px;
             color: #334155;
+            flex: 1;
         }
         .file-name i {
             color: #2563eb;
@@ -239,8 +241,8 @@
             background: #f1f5f9;
             border-radius: 12px;
             text-align: center;
-            font-size: 0.7rem;
-            font-weight: 500;
+            font-size: 0.75rem;
+            font-weight: 600;
             color: #2563eb;
         }
 
@@ -653,6 +655,9 @@
                 <div class="feature-badge">
                     <i class="fas fa-clock"></i> Smart Deduplication: Hanya mengambil record dengan waktu terbaru per user per tanggal
                 </div>
+                <div class="feature-badge">
+                    <i class="fas fa-layer-group"></i> Multiple File Support: Semua file yang diupload akan digabung
+                </div>
             </div>
         </div>
 
@@ -666,7 +671,6 @@
             <div class="stat-card"><div class="stat-icon"><i class="fas fa-gift"></i></div><div class="stat-value" id="statBonusCount">0</div><div class="stat-label">Sudah Bonus</div></div>
             <div class="stat-card"><div class="stat-icon"><i class="fas fa-arrow-up"></i></div><div class="stat-value" id="statWDCount">0</div><div class="stat-label">Sudah Withdraw</div></div>
             <div class="stat-card"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-value" id="statResultCount">0</div><div class="stat-label">BELUM CLAIM BONUS DP</div></div>
-            <div class="stat-card"><div class="stat-icon"><i class="fas fa-layer-group"></i></div><div class="stat-value" id="statDedupCount">0</div><div class="stat-label">Duplicates Removed</div></div>
         </div>
 
         <!-- Upload Grid -->
@@ -783,7 +787,7 @@
                         <tr><th>User Name</th><th>Deposit</th><th>Date/Time</th><th>Reference</th><th>RRN</th><th>Status</th><th>Info</th>\\
                     </thead>
                     <tbody id="resultBody"></tbody>
-                寸
+                表
             </div>
         </div>
 
@@ -791,7 +795,7 @@
         <div class="info-panel">
             <h4><i class="fas fa-info-circle"></i> How to Use</h4>
             <div class="info-grid">
-                <li><i class="fas fa-upload" style="color:#2563eb"></i> <strong>1. Upload Data</strong> - Upload file Manual Deposit, QRPay, dan Withdraw History</li>
+                <li><i class="fas fa-upload" style="color:#2563eb"></i> <strong>1. Upload Data</strong> - Upload multiple file Manual Deposit, QRPay, dan Withdraw History (semua file akan digabung)</li>
                 <li><i class="fas fa-tag" style="color:#2563eb"></i> <strong>2. Set Keywords</strong> - Pilih kata kunci bonus yang muncul di kolom "To Bank"</li>
                 <li><i class="fas fa-sliders-h" style="color:#2563eb"></i> <strong>3. Apply Filters</strong> - Atur nominal dan tanggal (opsional)</li>
                 <li><i class="fas fa-chart-line" style="color:#2563eb"></i> <strong>4. View Results</strong> - Klik Filter Data untuk melihat BELUM CLAIM BONUS DP</li>
@@ -801,7 +805,7 @@
         </div>
 
         <footer>
-            <p>SCB Deposit Intelligence © 2024 | Smart Deduplication - Latest Timestamp Only | Professional Filter System</p>
+            <p>SCB Deposit Intelligence © 2024 | Smart Deduplication - Latest Timestamp Only | Professional Filter System | Support Multiple Files</p>
         </footer>
     </div>
 
@@ -810,10 +814,14 @@
     </div>
 
     <script>
-        // Data Storage
-        let manualFilesData = [];
-        let qrpayFilesData = [];
-        let withdrawFilesData = [];
+        // Data Storage - Menyimpan semua file yang diupload
+        let manualFilesList = []; // Untuk menyimpan info file
+        let qrpayFilesList = [];
+        let withdrawFilesList = [];
+        
+        let manualFileObjects = []; // Untuk menyimpan file asli
+        let qrpayFileObjects = [];
+        let withdrawFileObjects = [];
         
         let combinedManualData = [];
         let combinedQRData = [];
@@ -846,7 +854,6 @@
             return 0;
         }
 
-        // Enhanced date parser that preserves full timestamp for comparison
         function extractDate(dt) {
             if(!dt) return '';
             let str = String(dt);
@@ -859,14 +866,12 @@
             return '';
         }
 
-        // Get full timestamp for sorting (to find latest)
         function getFullTimestamp(dt) {
             if(!dt) return 0;
             let str = String(dt);
             let date = new Date(str);
             if(!isNaN(date.getTime())) return date.getTime();
             
-            // Try parsing common formats
             let matchDMY = str.match(/(\d{2})\/(\d{2})\/(\d{4})[\s](\d{2}):(\d{2})/);
             if(matchDMY) {
                 let dateStr = `${matchDMY[3]}-${matchDMY[2]}-${matchDMY[1]}T${matchDMY[4]}:${matchDMY[5]}:00`;
@@ -880,7 +885,6 @@
             return 0;
         }
 
-        // Deduplicate data: keep only the latest record per user per date
         function deduplicateByLatestTimestamp(data) {
             const latestMap = new Map();
             let duplicateCount = 0;
@@ -928,64 +932,176 @@
             });
         }
 
+        // Fungsi untuk memproses ulang semua file yang tersisa (setelah delete)
+        async function reprocessAllFiles(type) {
+            let fileObjects = [];
+            let allRecords = [];
+            let newFileList = [];
+            
+            if(type === 'manual') {
+                fileObjects = manualFileObjects;
+            } else if(type === 'qrpay') {
+                fileObjects = qrpayFileObjects;
+            } else if(type === 'withdraw') {
+                fileObjects = withdrawFileObjects;
+            }
+            
+            if(fileObjects.length === 0) {
+                if(type === 'manual') combinedManualData = [];
+                else if(type === 'qrpay') combinedQRData = [];
+                else if(type === 'withdraw') combinedWithdrawData = [];
+                
+                if(type === 'manual') manualFilesList = [];
+                else if(type === 'qrpay') qrpayFilesList = [];
+                else if(type === 'withdraw') withdrawFilesList = [];
+                
+                updateFileList(type, []);
+                document.getElementById(`${type}TotalBadge`).style.display = 'none';
+                return;
+            }
+            
+            // Baca semua file yang tersisa
+            for(let fileObj of fileObjects) {
+                try {
+                    const data = await readExcelFile(fileObj.file);
+                    allRecords.push(...data);
+                    newFileList.push({ name: fileObj.name, size: fileObj.size, records: data.length });
+                } catch(err) {
+                    showAlert(`Error reading ${fileObj.name}: ${err.message}`, 'error');
+                }
+            }
+            
+            // Apply deduplication untuk QRPay
+            if(type === 'qrpay' && allRecords.length > 0) {
+                const { dedupedData, duplicateCount } = deduplicateByLatestTimestamp(allRecords);
+                if(duplicateCount > 0) {
+                    showAlert(`QRPay: ${duplicateCount} duplicates removed from remaining files`, 'info');
+                }
+                allRecords = dedupedData;
+            }
+            
+            // Update data
+            if(type === 'manual') {
+                manualFilesList = newFileList;
+                combinedManualData = allRecords;
+                document.getElementById('statManualRecords').textContent = allRecords.length;
+                updateFileList('manual', manualFilesList);
+                document.getElementById('manualTotalBadge').innerHTML = `<i class="fas fa-chart-line"></i> ${manualFilesList.length} file · ${allRecords.length} records`;
+                document.getElementById('manualTotalBadge').style.display = manualFilesList.length ? 'block' : 'none';
+            } else if(type === 'qrpay') {
+                qrpayFilesList = newFileList;
+                combinedQRData = allRecords;
+                document.getElementById('statQRRecords').textContent = allRecords.length;
+                updateFileList('qrpay', qrpayFilesList);
+                document.getElementById('qrpayTotalBadge').innerHTML = `<i class="fas fa-chart-line"></i> ${qrpayFilesList.length} file · ${allRecords.length} records (deduplicated)`;
+                document.getElementById('qrpayTotalBadge').style.display = qrpayFilesList.length ? 'block' : 'none';
+            } else if(type === 'withdraw') {
+                withdrawFilesList = newFileList;
+                combinedWithdrawData = allRecords;
+                document.getElementById('statWDRecords').textContent = allRecords.length;
+                updateFileList('withdraw', withdrawFilesList);
+                document.getElementById('withdrawTotalBadge').innerHTML = `<i class="fas fa-chart-line"></i> ${withdrawFilesList.length} file · ${allRecords.length} records`;
+                document.getElementById('withdrawTotalBadge').style.display = withdrawFilesList.length ? 'block' : 'none';
+            }
+            
+            // Update tombol filter
+            if(combinedManualData.length > 0 && combinedQRData.length > 0 && combinedWithdrawData.length > 0) {
+                document.getElementById('filterBtn').disabled = false;
+                document.getElementById('filterPanel').style.display = 'block';
+                document.getElementById('statsDashboard').style.display = 'grid';
+            } else {
+                document.getElementById('filterBtn').disabled = true;
+                document.getElementById('filterPanel').style.display = 'none';
+                document.getElementById('statsDashboard').style.display = 'none';
+                document.getElementById('resultSection').style.display = 'none';
+                document.getElementById('downloadBtn').disabled = true;
+            }
+        }
+
+        // Fungsi untuk menghapus file
+        window.removeFile = async function(type, index) {
+            if(type === 'manual') {
+                manualFileObjects.splice(index, 1);
+                await reprocessAllFiles('manual');
+            } else if(type === 'qrpay') {
+                qrpayFileObjects.splice(index, 1);
+                await reprocessAllFiles('qrpay');
+            } else if(type === 'withdraw') {
+                withdrawFileObjects.splice(index, 1);
+                await reprocessAllFiles('withdraw');
+            }
+            
+            // Reset hasil filter jika ada
+            filteredResult = null;
+            document.getElementById('resultSection').style.display = 'none';
+            document.getElementById('downloadBtn').disabled = true;
+            
+            showAlert(`File ${type} berhasil dihapus`, 'info');
+        };
+
+        // Fungsi untuk handle upload multiple files
         async function handleMultipleFiles(files, type) {
             if(!files || files.length === 0) return;
             document.getElementById('loading').style.display = 'flex';
             
-            let allRecords = [];
-            let fileList = [];
+            let allNewRecords = [];
+            let newFileList = [];
+            let newFileObjects = [];
             
+            // Baca semua file yang baru diupload
             for(let file of files) {
                 try {
                     const data = await readExcelFile(file);
-                    allRecords.push(...data);
-                    fileList.push({ name: file.name, size: file.size, records: data.length });
+                    allNewRecords.push(...data);
+                    newFileList.push({ name: file.name, size: file.size, records: data.length });
+                    newFileObjects.push({ name: file.name, size: file.size, file: file });
                 } catch(err) {
                     showAlert(`Error: ${file.name} - ${err.message}`, 'error');
                 }
             }
             
-            // Apply deduplication for QRPay data (keeping latest timestamp)
-            if(type === 'qrpay' && allRecords.length > 0) {
-                const { dedupedData, duplicateCount } = deduplicateByLatestTimestamp(allRecords);
-                if(duplicateCount > 0) {
-                    showAlert(`QRPay: ${duplicateCount} duplicates removed, keeping latest records only`, 'info');
-                }
-                allRecords = dedupedData;
-            }
-            
+            // Gabungkan dengan file yang sudah ada
             if(type === 'manual') {
-                manualFilesData = fileList;
-                combinedManualData = allRecords;
-                updateFileList('manual', fileList);
-                document.getElementById('manualTotalBadge').innerHTML = `<i class="fas fa-chart-line"></i> ${fileList.length} file · ${allRecords.length} records`;
+                manualFileObjects.push(...newFileObjects);
+                manualFilesList.push(...newFileList);
+                combinedManualData = combinedManualData.concat(allNewRecords);
+                document.getElementById('statManualRecords').textContent = combinedManualData.length;
+                updateFileList('manual', manualFilesList);
+                document.getElementById('manualTotalBadge').innerHTML = `<i class="fas fa-chart-line"></i> ${manualFilesList.length} file · ${combinedManualData.length} records`;
                 document.getElementById('manualTotalBadge').style.display = 'block';
-                document.getElementById('statManualRecords').textContent = allRecords.length;
+                showAlert(`✓ MANUAL: ${files.length} file baru ditambahkan (total ${manualFilesList.length} file, ${combinedManualData.length} records)`, 'success');
             } else if(type === 'qrpay') {
-                qrpayFilesData = fileList;
-                combinedQRData = allRecords;
-                updateFileList('qrpay', fileList);
-                document.getElementById('qrpayTotalBadge').innerHTML = `<i class="fas fa-chart-line"></i> ${fileList.length} file · ${allRecords.length} records (deduplicated)`;
+                qrpayFileObjects.push(...newFileObjects);
+                qrpayFilesList.push(...newFileList);
+                combinedQRData = combinedQRData.concat(allNewRecords);
+                // Lakukan deduplikasi setelah menggabungkan semua data QRPay
+                const { dedupedData, duplicateCount } = deduplicateByLatestTimestamp(combinedQRData);
+                if(duplicateCount > 0) {
+                    showAlert(`QRPay: ${duplicateCount} duplicates removed dari total ${combinedQRData.length} records`, 'info');
+                }
+                combinedQRData = dedupedData;
+                document.getElementById('statQRRecords').textContent = combinedQRData.length;
+                updateFileList('qrpay', qrpayFilesList);
+                document.getElementById('qrpayTotalBadge').innerHTML = `<i class="fas fa-chart-line"></i> ${qrpayFilesList.length} file · ${combinedQRData.length} records (deduplicated)`;
                 document.getElementById('qrpayTotalBadge').style.display = 'block';
-                document.getElementById('statQRRecords').textContent = allRecords.length;
+                showAlert(`✓ QRPAY: ${files.length} file baru ditambahkan (total ${qrpayFilesList.length} file, ${combinedQRData.length} records setelah deduplikasi)`, 'success');
             } else if(type === 'withdraw') {
-                withdrawFilesData = fileList;
-                combinedWithdrawData = allRecords;
-                updateFileList('withdraw', fileList);
-                document.getElementById('withdrawTotalBadge').innerHTML = `<i class="fas fa-chart-line"></i> ${fileList.length} file · ${allRecords.length} records`;
+                withdrawFileObjects.push(...newFileObjects);
+                withdrawFilesList.push(...newFileList);
+                combinedWithdrawData = combinedWithdrawData.concat(allNewRecords);
+                document.getElementById('statWDRecords').textContent = combinedWithdrawData.length;
+                updateFileList('withdraw', withdrawFilesList);
+                document.getElementById('withdrawTotalBadge').innerHTML = `<i class="fas fa-chart-line"></i> ${withdrawFilesList.length} file · ${combinedWithdrawData.length} records`;
                 document.getElementById('withdrawTotalBadge').style.display = 'block';
-                document.getElementById('statWDRecords').textContent = allRecords.length;
+                showAlert(`✓ WITHDRAW: ${files.length} file baru ditambahkan (total ${withdrawFilesList.length} file, ${combinedWithdrawData.length} records)`, 'success');
             }
             
-            if(allRecords.length > 0) {
-                showAlert(`✓ ${type.toUpperCase()}: ${allRecords.length} records ${type === 'qrpay' ? '(deduplicated - latest only)' : ''}`, 'success');
-            }
-            
+            // Cek apakah semua jenis data sudah ada
             if(combinedManualData.length > 0 && combinedQRData.length > 0 && combinedWithdrawData.length > 0) {
                 document.getElementById('filterBtn').disabled = false;
                 document.getElementById('filterPanel').style.display = 'block';
                 document.getElementById('statsDashboard').style.display = 'grid';
-                showAlert('✅ All files uploaded! Click Filter Data', 'success');
+                showAlert('✅ Semua file sudah diupload! Klik "Filter Data" untuk melihat hasil', 'success');
             }
             
             document.getElementById('loading').style.display = 'none';
@@ -993,13 +1109,16 @@
 
         function updateFileList(type, files) {
             const container = document.getElementById(`${type}FileList`);
-            if(files.length === 0) {
+            if(!files || files.length === 0) {
                 container.innerHTML = '';
                 return;
             }
             container.innerHTML = files.map((f, idx) => `
                 <div class="file-item">
-                    <div class="file-name"><i class="fas fa-file-excel"></i> ${f.name}</div>
+                    <div class="file-name">
+                        <i class="fas fa-file-excel"></i>
+                        <span title="${f.name}">${f.name.length > 30 ? f.name.substring(0, 27) + '...' : f.name}</span>
+                    </div>
                     <div class="file-stats">
                         <span>${f.records} records</span>
                         <button class="remove-file" onclick="removeFile('${type}', ${idx})"><i class="fas fa-trash-alt"></i></button>
@@ -1008,36 +1127,6 @@
             `).join('');
         }
 
-        window.removeFile = function(type, index) {
-            if(type === 'manual') {
-                manualFilesData.splice(index, 1);
-                if(manualFilesData.length === 0) combinedManualData = [];
-                document.getElementById('manualTotalBadge').style.display = manualFilesData.length ? 'block' : 'none';
-                updateFileList('manual', manualFilesData);
-                document.getElementById('statManualRecords').textContent = combinedManualData.length;
-            } else if(type === 'qrpay') {
-                qrpayFilesData.splice(index, 1);
-                if(qrpayFilesData.length === 0) combinedQRData = [];
-                document.getElementById('qrpayTotalBadge').style.display = qrpayFilesData.length ? 'block' : 'none';
-                updateFileList('qrpay', qrpayFilesData);
-                document.getElementById('statQRRecords').textContent = combinedQRData.length;
-            } else if(type === 'withdraw') {
-                withdrawFilesData.splice(index, 1);
-                if(withdrawFilesData.length === 0) combinedWithdrawData = [];
-                document.getElementById('withdrawTotalBadge').style.display = withdrawFilesData.length ? 'block' : 'none';
-                updateFileList('withdraw', withdrawFilesData);
-                document.getElementById('statWDRecords').textContent = combinedWithdrawData.length;
-            }
-            
-            if(combinedManualData.length === 0 || combinedQRData.length === 0 || combinedWithdrawData.length === 0) {
-                document.getElementById('filterBtn').disabled = true;
-                document.getElementById('statsDashboard').style.display = 'none';
-                document.getElementById('filterPanel').style.display = 'none';
-            } else {
-                document.getElementById('filterBtn').disabled = false;
-            }
-        };
-
         function isBonusTransaction(record) {
             const toBank = String(record['To Bank'] || '').toUpperCase();
             return activeKeywords.some(kw => toBank.includes(kw.toUpperCase()));
@@ -1045,7 +1134,7 @@
 
         window.applyFilters = function() {
             if(combinedManualData.length === 0 || combinedQRData.length === 0 || combinedWithdrawData.length === 0) {
-                showAlert('Please upload all files first', 'error');
+                showAlert('Harap upload semua file terlebih dahulu (Manual, QRPay, dan Withdraw)', 'error');
                 return;
             }
             
@@ -1058,7 +1147,7 @@
                     const startDate = document.getElementById('startDate').value;
                     const endDate = document.getElementById('endDate').value;
                     
-                    // Bonus Set from manual data
+                    // Bonus Set dari manual data
                     const bonusSet = new Set();
                     combinedManualData.forEach(rec => {
                         if(isBonusTransaction(rec)) {
@@ -1078,7 +1167,7 @@
                     });
                     document.getElementById('statWDCount').textContent = withdrawSet.size;
                     
-                    // Filter QRPay records (already deduplicated)
+                    // Filter QRPay records (sudah terdeduplikasi)
                     const filtered = combinedQRData.filter(rec => {
                         const user = String(rec['User Name'] || '').trim().toLowerCase();
                         const date = extractDate(rec['Date/Time']);
@@ -1106,12 +1195,10 @@
                     const tbody = document.getElementById('resultBody');
                     tbody.innerHTML = '';
                     if(filtered.length === 0) {
-                        tbody.innerHTML = ' tr><td colspan="7" class="empty-state">No BELUM CLAIM BONUS DP found</td></tr>';
+                        tbody.innerHTML = '<tr><td colspan="7" class="empty-state">Tidak ada data BELUM CLAIM BONUS DP</td></tr>';
                     } else {
                         filtered.forEach(row => {
                             let depositStr = `Rp ${parseNumber(row['Deposit']).toLocaleString('id-ID')}`;
-                            const timestamp = getFullTimestamp(row['Date/Time']);
-                            const isLatest = true; // Already deduplicated
                             const tr = document.createElement('tr');
                             tr.innerHTML = `
                                 <td><strong>${escapeHtml(row['User Name'])}</strong></td>
@@ -1128,7 +1215,7 @@
                     
                     document.getElementById('resultSection').style.display = 'block';
                     document.getElementById('downloadBtn').disabled = false;
-                    showAlert(`✨ Found ${filtered.length} BELUM CLAIM BONUS DP (deduplicated - latest records only)`, 'success');
+                    showAlert(`✨ Ditemukan ${filtered.length} user BELUM CLAIM BONUS DP`, 'success');
                 } catch(err) {
                     showAlert(`Error: ${err.message}`, 'error');
                 } finally {
@@ -1145,12 +1232,15 @@
         }
 
         window.downloadExcel = function() {
-            if(!filteredResult || filteredResult.length===0) { showAlert('No data to download', 'error'); return; }
+            if(!filteredResult || filteredResult.length===0) { 
+                showAlert('Tidak ada data untuk didownload', 'error'); 
+                return; 
+            }
             const ws = XLSX.utils.json_to_sheet(filteredResult);
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, 'BELUM CLAIM BONUS DP');
             XLSX.writeFile(wb, `eligible_users_${new Date().toISOString().split('T')[0]}.xlsx`);
-            showAlert(`✓ Downloaded ${filteredResult.length} records`, 'success');
+            showAlert(`✓ Berhasil download ${filteredResult.length} records`, 'success');
         };
 
         window.resetFilters = function() {
@@ -1158,14 +1248,17 @@
             document.getElementById('maxNominal').value = '999999999';
             document.getElementById('startDate').value = '';
             document.getElementById('endDate').value = '';
-            showAlert('Filters reset', 'info');
+            showAlert('Filter direset', 'info');
             if(combinedManualData.length && combinedQRData.length && combinedWithdrawData.length) applyFilters();
         };
 
         window.resetAll = function() {
-            manualFilesData = [];
-            qrpayFilesData = [];
-            withdrawFilesData = [];
+            manualFilesList = [];
+            qrpayFilesList = [];
+            withdrawFilesList = [];
+            manualFileObjects = [];
+            qrpayFileObjects = [];
+            withdrawFileObjects = [];
             combinedManualData = [];
             combinedQRData = [];
             combinedWithdrawData = [];
@@ -1190,6 +1283,9 @@
             document.getElementById('maxNominal').value = '999999999';
             document.getElementById('startDate').value = '';
             document.getElementById('endDate').value = '';
+            document.getElementById('statManualRecords').textContent = '0';
+            document.getElementById('statQRRecords').textContent = '0';
+            document.getElementById('statWDRecords').textContent = '0';
             
             document.querySelectorAll('.keyword-tag').forEach(tag => {
                 if(tag.dataset.keyword === 'BONUS DEPOSIT HARIAN' || tag.dataset.keyword === 'SCB A BONUS DEPOSIT HARIAN') {
@@ -1199,7 +1295,7 @@
                 }
             });
             updateActiveKeywords();
-            showAlert('All data cleared', 'info');
+            showAlert('Semua data telah dibersihkan', 'info');
         };
 
         function updateActiveKeywords() {
@@ -1213,7 +1309,9 @@
                 activeKeywords.push(kw);
                 updateActiveKeywords();
                 inp.value = '';
-                showAlert(`✓ Keyword "${kw}" added`, 'success');
+                showAlert(`✓ Keyword "${kw}" ditambahkan`, 'success');
+            } else if(kw && activeKeywords.includes(kw)) {
+                showAlert(`Keyword "${kw}" sudah ada`, 'info');
             }
         };
 
@@ -1235,12 +1333,15 @@
         // File input handlers
         document.getElementById('manualFileInput').addEventListener('change', (e) => {
             if(e.target.files.length) handleMultipleFiles(Array.from(e.target.files), 'manual');
+            e.target.value = ''; // Reset input
         });
         document.getElementById('qrpayFileInput').addEventListener('change', (e) => {
             if(e.target.files.length) handleMultipleFiles(Array.from(e.target.files), 'qrpay');
+            e.target.value = '';
         });
         document.getElementById('withdrawFileInput').addEventListener('change', (e) => {
             if(e.target.files.length) handleMultipleFiles(Array.from(e.target.files), 'withdraw');
+            e.target.value = '';
         });
 
         // Drag & drop
