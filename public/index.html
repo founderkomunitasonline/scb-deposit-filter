@@ -658,20 +658,27 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(255,255,255,0.9);
+            background: rgba(255,255,255,0.95);
             backdrop-filter: blur(4px);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 1000;
+            flex-direction: column;
+            gap: 16px;
         }
         .spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid #e2e8f0;
+            width: 48px;
+            height: 48px;
+            border: 4px solid #e2e8f0;
             border-top-color: #2563eb;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
+        }
+        .loading-text {
+            font-size: 0.9rem;
+            color: #2563eb;
+            font-weight: 500;
         }
         @keyframes spin {
             to { transform: rotate(360deg); }
@@ -743,13 +750,13 @@
                 <h2><i class="fas fa-brain"></i> Smart Filter Logic - Berdasarkan Record Terbaru</h2>
                 <p>User yang BELUM mendapatkan bonus deposit harian (berdasarkan kata kunci di kolom To Bank) dan BELUM melakukan withdraw akan ditampilkan sebagai BELUM CLAIM BONUS DP.</p>
                 <div class="feature-badge">
+                    <i class="fas fa-database"></i> Support data besar: Ribuan record akan terbaca semua
+                </div>
+                <div class="feature-badge">
                     <i class="fas fa-clock"></i> Smart Filter: Hanya record TERBARU yang dipertimbangkan untuk filter nominal
                 </div>
                 <div class="feature-badge">
                     <i class="fas fa-chart-simple"></i> Klik User Name untuk lihat detail semua riwayat deposit user tersebut
-                </div>
-                <div class="feature-badge">
-                    <i class="fas fa-layer-group"></i> Multiple File Support: Semua file yang diupload akan digabung
                 </div>
             </div>
         </div>
@@ -777,7 +784,7 @@
                 <div id="manualUploadArea" class="upload-area">
                     <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
                     <p>Klik atau drag & drop file</p>
-                    <small>.xlsx, .xls, .csv | Multiple files</small>
+                    <small>.xlsx, .xls, .csv | Support ribuan data</small>
                     <input type="file" id="manualFileInput" accept=".xlsx,.xls,.csv" multiple style="display:none">
                 </div>
                 <div id="manualFileList" class="file-list"></div>
@@ -793,7 +800,7 @@
                 <div id="qrpayUploadArea" class="upload-area">
                     <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
                     <p>Klik atau drag & drop file</p>
-                    <small>.xlsx, .xls, .csv | Multiple files</small>
+                    <small>.xlsx, .xls, .csv | Support ribuan data</small>
                     <input type="file" id="qrpayFileInput" accept=".xlsx,.xls,.csv" multiple style="display:none">
                 </div>
                 <div id="qrpayFileList" class="file-list"></div>
@@ -809,7 +816,7 @@
                 <div id="withdrawUploadArea" class="upload-area">
                     <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
                     <p>Klik atau drag & drop file</p>
-                    <small>.xlsx, .xls, .csv | Multiple files</small>
+                    <small>.xlsx, .xls, .csv | Support ribuan data</small>
                     <input type="file" id="withdrawFileInput" accept=".xlsx,.xls,.csv" multiple style="display:none">
                 </div>
                 <div id="withdrawFileList" class="file-list"></div>
@@ -886,27 +893,28 @@
 
         <!-- Info Panel -->
         <div class="info-panel">
-            <h4><i class="fas fa-info-circle"></i> Cara Kerja Filter Nominal & Detail History</h4>
+            <h4><i class="fas fa-info-circle"></i> Cara Kerja & Tips Upload Data Besar</h4>
             <div class="info-grid">
-                <li><i class="fas fa-upload" style="color:#2563eb"></i> <strong>1. Upload Data</strong> - Upload file Manual Deposit, QRPay, dan Withdraw History</li>
+                <li><i class="fas fa-upload" style="color:#2563eb"></i> <strong>1. Upload Data</strong> - Upload file Manual Deposit, QRPay, dan Withdraw History (bisa drag & drop banyak file sekaligus)</li>
                 <li><i class="fas fa-tag" style="color:#2563eb"></i> <strong>2. Set Keywords</strong> - Pilih kata kunci bonus yang muncul di kolom "To Bank"</li>
                 <li><i class="fas fa-sliders-h" style="color:#2563eb"></i> <strong>3. Apply Filters</strong> - Atur nominal dan tanggal (opsional)</li>
                 <li><i class="fas fa-chart-line" style="color:#2563eb"></i> <strong>4. Smart Filter</strong> - Sistem mengambil record TERBARU per user. Jika nominal terbaru di luar range, user TIDAK ditampilkan</li>
                 <li><i class="fas fa-eye" style="color:#2563eb"></i> <strong>5. Detail History</strong> - Klik User Name untuk melihat semua riwayat deposit user (Manual + QRPay)</li>
-                <li><i class="fas fa-download" style="color:#2563eb"></i> <strong>6. Export</strong> - Download hasil ke Excel</li>
+                <li><i class="fas fa-database" style="color:#2563eb"></i> <strong>Tips Data Besar</strong> - Sistem sudah dioptimasi untuk memproses ribuan data tanpa batas</li>
             </div>
             <div style="margin-top: 12px; padding: 12px; background: #eef2ff; border-radius: 12px;">
-                <strong>📌 Contoh:</strong> User deposit 50 (lama) dan 30 (baru), filter 50-90 → user <strong>TIDAK muncul</strong> karena record terbaru (30) di luar range filter.
+                <strong>📌 Contoh Filter Nominal:</strong> User deposit 50 (lama) dan 30 (baru), filter 50-90 → user <strong>TIDAK muncul</strong> karena record terbaru (30) di luar range filter.
             </div>
         </div>
 
         <footer>
-            <p>SCB Deposit Intelligence Pro © 2025 | Smart Filter by Latest Record | Detail History Viewer | Professional Data Analysis</p>
+            <p>SCB Deposit Intelligence Pro © 2025 | Support Data Besar | Smart Filter by Latest Record | Detail History Viewer</p>
         </footer>
     </div>
 
     <div id="loading" style="display:none" class="loading-overlay">
         <div class="spinner"></div>
+        <div class="loading-text">Memproses data... Mohon tunggu</div>
     </div>
 
     <!-- Modal Detail -->
@@ -1010,53 +1018,64 @@
         async function handleMultipleFiles(files, type) {
             if(!files.length) return;
             document.getElementById('loading').style.display = 'flex';
+            
             let allRecords = [];
+            let processedFiles = 0;
+            
+            // Proses semua file secara berurutan untuk memastikan semua data terbaca
             for(let file of files) {
                 try {
                     const data = await readExcelFile(file);
                     allRecords.push(...data);
+                    processedFiles++;
+                    showAlert(`📊 Memproses ${file.name}: ${data.length} record`, 'info');
                 } catch(err) {
                     showAlert(`Error: ${file.name} - ${err.message}`, 'error');
                 }
             }
             
             if(type === 'manual') {
-                manualFileObjects.push(...files.map(f => ({ name: f.name, size: f.size, file: f })));
-                combinedManualData.push(...allRecords);
+                manualFileObjects.push(...files.map(f => ({ name: f.name, size: f.size, file: f, records: allRecords.length })));
+                combinedManualData = combinedManualData.concat(allRecords);
                 document.getElementById('statManualRecords').textContent = combinedManualData.length;
                 updateFileList('manual', manualFileObjects);
                 document.getElementById('manualTotalBadge').innerHTML = `<i class="fas fa-chart-line"></i> ${manualFileObjects.length} file · ${combinedManualData.length} records`;
                 document.getElementById('manualTotalBadge').style.display = 'block';
-                showAlert(`✓ MANUAL: ${files.length} file (total ${combinedManualData.length} records)`, 'success');
+                showAlert(`✓ MANUAL: ${files.length} file diproses (TOTAL: ${combinedManualData.length} records)`, 'success');
             } else if(type === 'qrpay') {
-                qrpayFileObjects.push(...files.map(f => ({ name: f.name, size: f.size, file: f })));
-                combinedQRData.push(...allRecords);
+                qrpayFileObjects.push(...files.map(f => ({ name: f.name, size: f.size, file: f, records: allRecords.length })));
+                combinedQRData = combinedQRData.concat(allRecords);
+                // Lakukan deduplikasi
+                const beforeDedup = combinedQRData.length;
                 const deduped = deduplicateByLatestTimestamp(combinedQRData);
-                if(deduped.length !== combinedQRData.length) {
-                    showAlert(`QRPay: ${combinedQRData.length - deduped.length} duplicate removed`, 'info');
+                const removedCount = beforeDedup - deduped.length;
+                if(removedCount > 0) {
+                    showAlert(`QRPay: ${removedCount} duplicate removed dari total ${beforeDedup} records`, 'info');
                 }
                 combinedQRData = deduped;
                 document.getElementById('statQRRecords').textContent = combinedQRData.length;
                 updateFileList('qrpay', qrpayFileObjects);
-                document.getElementById('qrpayTotalBadge').innerHTML = `<i class="fas fa-chart-line"></i> ${qrpayFileObjects.length} file · ${combinedQRData.length} records (deduped)`;
+                document.getElementById('qrpayTotalBadge').innerHTML = `<i class="fas fa-chart-line"></i> ${qrpayFileObjects.length} file · ${combinedQRData.length} records (after dedup)`;
                 document.getElementById('qrpayTotalBadge').style.display = 'block';
-                showAlert(`✓ QRPAY: ${files.length} file (total ${combinedQRData.length} records after dedup)`, 'success');
+                showAlert(`✓ QRPAY: ${files.length} file diproses (TOTAL: ${combinedQRData.length} records setelah deduplikasi)`, 'success');
             } else if(type === 'withdraw') {
-                withdrawFileObjects.push(...files.map(f => ({ name: f.name, size: f.size, file: f })));
-                combinedWithdrawData.push(...allRecords);
+                withdrawFileObjects.push(...files.map(f => ({ name: f.name, size: f.size, file: f, records: allRecords.length })));
+                combinedWithdrawData = combinedWithdrawData.concat(allRecords);
                 document.getElementById('statWDRecords').textContent = combinedWithdrawData.length;
                 updateFileList('withdraw', withdrawFileObjects);
                 document.getElementById('withdrawTotalBadge').innerHTML = `<i class="fas fa-chart-line"></i> ${withdrawFileObjects.length} file · ${combinedWithdrawData.length} records`;
                 document.getElementById('withdrawTotalBadge').style.display = 'block';
-                showAlert(`✓ WITHDRAW: ${files.length} file (total ${combinedWithdrawData.length} records)`, 'success');
+                showAlert(`✓ WITHDRAW: ${files.length} file diproses (TOTAL: ${combinedWithdrawData.length} records)`, 'success');
             }
             
+            // Update status tombol filter
             if(combinedManualData.length && combinedQRData.length && combinedWithdrawData.length) {
                 document.getElementById('filterBtn').disabled = false;
                 document.getElementById('filterPanel').style.display = 'block';
                 document.getElementById('statsDashboard').style.display = 'grid';
-                showAlert('✅ Semua data siap! Klik Filter Data untuk melihat hasil', 'success');
+                showAlert(`✅ SEMUA DATA SIAP! Total QRPay: ${combinedQRData.length} records | Manual: ${combinedManualData.length} | Withdraw: ${combinedWithdrawData.length}`, 'success');
             }
+            
             document.getElementById('loading').style.display = 'none';
         }
 
@@ -1068,6 +1087,7 @@
                     <div class="file-name">
                         <i class="fas fa-file-excel"></i>
                         <span>${f.name.length > 30 ? f.name.substring(0,27)+'...' : f.name}</span>
+                        <span style="font-size:0.6rem; color:#64748b;">(${f.records || 0} records)</span>
                     </div>
                     <div class="file-stats">
                         <button class="remove-file" onclick="removeFile('${type}', ${idx})"><i class="fas fa-trash-alt"></i></button>
@@ -1077,9 +1097,16 @@
         }
 
         window.removeFile = async function(type, idx) {
-            if(type === 'manual') { manualFileObjects.splice(idx,1); await reprocessAllFiles('manual'); }
-            else if(type === 'qrpay') { qrpayFileObjects.splice(idx,1); await reprocessAllFiles('qrpay'); }
-            else if(type === 'withdraw') { withdrawFileObjects.splice(idx,1); await reprocessAllFiles('withdraw'); }
+            if(type === 'manual') { 
+                manualFileObjects.splice(idx,1); 
+                await reprocessAllFiles('manual'); 
+            } else if(type === 'qrpay') { 
+                qrpayFileObjects.splice(idx,1); 
+                await reprocessAllFiles('qrpay'); 
+            } else if(type === 'withdraw') { 
+                withdrawFileObjects.splice(idx,1); 
+                await reprocessAllFiles('withdraw'); 
+            }
             filteredResult = null;
             document.getElementById('resultSection').style.display = 'none';
             document.getElementById('downloadBtn').disabled = true;
@@ -1087,9 +1114,15 @@
         };
 
         async function reprocessAllFiles(type) {
+            document.getElementById('loading').style.display = 'flex';
+            
             if(type === 'manual') {
                 let newRecords = [];
-                for(let f of manualFileObjects) { const data = await readExcelFile(f.file); newRecords.push(...data); }
+                for(let f of manualFileObjects) { 
+                    const data = await readExcelFile(f.file); 
+                    newRecords.push(...data);
+                    f.records = data.length;
+                }
                 combinedManualData = newRecords;
                 document.getElementById('statManualRecords').textContent = combinedManualData.length;
                 updateFileList('manual', manualFileObjects);
@@ -1097,7 +1130,11 @@
                 document.getElementById('manualTotalBadge').style.display = manualFileObjects.length ? 'block' : 'none';
             } else if(type === 'qrpay') {
                 let newRecords = [];
-                for(let f of qrpayFileObjects) { const data = await readExcelFile(f.file); newRecords.push(...data); }
+                for(let f of qrpayFileObjects) { 
+                    const data = await readExcelFile(f.file); 
+                    newRecords.push(...data);
+                    f.records = data.length;
+                }
                 const deduped = deduplicateByLatestTimestamp(newRecords);
                 combinedQRData = deduped;
                 document.getElementById('statQRRecords').textContent = combinedQRData.length;
@@ -1106,13 +1143,18 @@
                 document.getElementById('qrpayTotalBadge').style.display = qrpayFileObjects.length ? 'block' : 'none';
             } else if(type === 'withdraw') {
                 let newRecords = [];
-                for(let f of withdrawFileObjects) { const data = await readExcelFile(f.file); newRecords.push(...data); }
+                for(let f of withdrawFileObjects) { 
+                    const data = await readExcelFile(f.file); 
+                    newRecords.push(...data);
+                    f.records = data.length;
+                }
                 combinedWithdrawData = newRecords;
                 document.getElementById('statWDRecords').textContent = combinedWithdrawData.length;
                 updateFileList('withdraw', withdrawFileObjects);
                 document.getElementById('withdrawTotalBadge').innerHTML = withdrawFileObjects.length ? `<i class="fas fa-chart-line"></i> ${withdrawFileObjects.length} file · ${combinedWithdrawData.length} records` : '';
                 document.getElementById('withdrawTotalBadge').style.display = withdrawFileObjects.length ? 'block' : 'none';
             }
+            
             if(combinedManualData.length && combinedQRData.length && combinedWithdrawData.length) {
                 document.getElementById('filterBtn').disabled = false;
                 document.getElementById('filterPanel').style.display = 'block';
@@ -1122,6 +1164,8 @@
                 document.getElementById('filterPanel').style.display = 'none';
                 document.getElementById('statsDashboard').style.display = 'none';
             }
+            
+            document.getElementById('loading').style.display = 'none';
         }
 
         function isBonusTransaction(record) {
@@ -1227,7 +1271,7 @@
                     
                     document.getElementById('resultSection').style.display = 'block';
                     document.getElementById('downloadBtn').disabled = false;
-                    showAlert(`✨ Ditemukan ${filtered.length} user BELUM CLAIM BONUS (filter berdasarkan record terbaru)`, 'success');
+                    showAlert(`✨ Ditemukan ${filtered.length} user BELUM CLAIM BONUS dari total ${combinedQRData.length} record QRPay`, 'success');
                 } catch(err) {
                     showAlert(`Error: ${err.message}`, 'error');
                 } finally {
@@ -1240,7 +1284,7 @@
             const userHistory = allDepositHistory.filter(rec => String(rec['User Name'] || '').trim().toLowerCase() === userName.toLowerCase())
                 .sort((a,b) => getFullTimestamp(b['Date/Time']) - getFullTimestamp(a['Date/Time']));
             const modal = document.getElementById('detailModal');
-            document.getElementById('modalTitle').innerHTML = `<i class="fas fa-user"></i> ${userName} - History Deposit`;
+            document.getElementById('modalTitle').innerHTML = `<i class="fas fa-user"></i> ${userName} - History Deposit (${userHistory.length} record)`;
             const modalBody = document.getElementById('modalBody');
             if(!userHistory.length) {
                 modalBody.innerHTML = '<p>Tidak ada history deposit</p>';
@@ -1284,37 +1328,39 @@
         };
 
         window.resetAll = function() {
-            manualFileObjects = [];
-            qrpayFileObjects = [];
-            withdrawFileObjects = [];
-            combinedManualData = [];
-            combinedQRData = [];
-            combinedWithdrawData = [];
-            filteredResult = null;
-            activeKeywords = ['BONUS DEPOSIT HARIAN', 'SCB A BONUS DEPOSIT HARIAN'];
-            document.getElementById('manualFileList').innerHTML = '';
-            document.getElementById('qrpayFileList').innerHTML = '';
-            document.getElementById('withdrawFileList').innerHTML = '';
-            document.getElementById('manualTotalBadge').style.display = 'none';
-            document.getElementById('qrpayTotalBadge').style.display = 'none';
-            document.getElementById('withdrawTotalBadge').style.display = 'none';
-            document.getElementById('resultSection').style.display = 'none';
-            document.getElementById('filterBtn').disabled = true;
-            document.getElementById('downloadBtn').disabled = true;
-            document.getElementById('filterPanel').style.display = 'none';
-            document.getElementById('statsDashboard').style.display = 'none';
-            document.getElementById('statManualRecords').textContent = '0';
-            document.getElementById('statQRRecords').textContent = '0';
-            document.getElementById('statWDRecords').textContent = '0';
-            document.querySelectorAll('.keyword-tag').forEach(tag => {
-                if(tag.dataset.keyword === 'BONUS DEPOSIT HARIAN' || tag.dataset.keyword === 'SCB A BONUS DEPOSIT HARIAN') {
-                    tag.classList.add('active');
-                } else {
-                    tag.classList.remove('active');
-                }
-            });
-            updateActiveKeywords();
-            showAlert('Semua data dibersihkan', 'info');
+            if(confirm('Yakin ingin menghapus semua data yang sudah diupload?')) {
+                manualFileObjects = [];
+                qrpayFileObjects = [];
+                withdrawFileObjects = [];
+                combinedManualData = [];
+                combinedQRData = [];
+                combinedWithdrawData = [];
+                filteredResult = null;
+                activeKeywords = ['BONUS DEPOSIT HARIAN', 'SCB A BONUS DEPOSIT HARIAN'];
+                document.getElementById('manualFileList').innerHTML = '';
+                document.getElementById('qrpayFileList').innerHTML = '';
+                document.getElementById('withdrawFileList').innerHTML = '';
+                document.getElementById('manualTotalBadge').style.display = 'none';
+                document.getElementById('qrpayTotalBadge').style.display = 'none';
+                document.getElementById('withdrawTotalBadge').style.display = 'none';
+                document.getElementById('resultSection').style.display = 'none';
+                document.getElementById('filterBtn').disabled = true;
+                document.getElementById('downloadBtn').disabled = true;
+                document.getElementById('filterPanel').style.display = 'none';
+                document.getElementById('statsDashboard').style.display = 'none';
+                document.getElementById('statManualRecords').textContent = '0';
+                document.getElementById('statQRRecords').textContent = '0';
+                document.getElementById('statWDRecords').textContent = '0';
+                document.querySelectorAll('.keyword-tag').forEach(tag => {
+                    if(tag.dataset.keyword === 'BONUS DEPOSIT HARIAN' || tag.dataset.keyword === 'SCB A BONUS DEPOSIT HARIAN') {
+                        tag.classList.add('active');
+                    } else {
+                        tag.classList.remove('active');
+                    }
+                });
+                updateActiveKeywords();
+                showAlert('Semua data dibersihkan', 'info');
+            }
         };
 
         function updateActiveKeywords() {
@@ -1359,11 +1405,12 @@
         function setupDragDrop(areaId, inputId, type) {
             const area = document.getElementById(areaId);
             const input = document.getElementById(inputId);
-            area.addEventListener('dragover', e => { e.preventDefault(); area.style.borderColor = '#2563eb'; });
-            area.addEventListener('dragleave', () => { area.style.borderColor = '#cbd5e1'; });
+            area.addEventListener('dragover', e => { e.preventDefault(); area.style.borderColor = '#2563eb'; area.style.background = '#f8fafc'; });
+            area.addEventListener('dragleave', () => { area.style.borderColor = '#cbd5e1'; area.style.background = '#fefefe'; });
             area.addEventListener('drop', e => {
                 e.preventDefault();
                 area.style.borderColor = '#cbd5e1';
+                area.style.background = '#fefefe';
                 const files = Array.from(e.dataTransfer.files);
                 if(files.length) handleMultipleFiles(files, type);
             });
